@@ -1,0 +1,33 @@
+/* Shared colours for the app pages and the engine (engine C1 design, 2026-10-14, section 5).
+   Night tokens are the same in light and dark themes: the skill tree and the map are always dusk scenes.
+   Accent tokens follow the page theme so buttons and links stay readable on both. */
+:root {
+  /* Dusk scene */
+  --night: #0e1424;
+  --dusk: #1a2338;
+  --node-dark: #141b2c;
+  --line-dark: #2a3550;
+  --wire: #46536f;
+  --wire-hi: #8592ad;
+  --mist: #b9c2d6;
+  --paper: #eef1f7;
+  --lamp: #f2b544;
+  --lamp-hi: #ffd88a;
+  --on-lamp: #1d1608;
+  --due: #7cc4e8;
+
+  /* Page accent: the street-lamp colour, darkened on light backgrounds for contrast */
+  --accent: #8f5300;
+  --on-accent: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --accent: #f2b544; --on-accent: #1d1608; }
+}
+:root[data-theme="dark"] { --accent: #f2b544; --on-accent: #1d1608; }
+
+/* Title lettering: system font with wide tracking, no bundled typeface */
+.brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; letter-spacing: .14em; }
+.brand svg { width: 22px; height: 22px; flex: none; }
+.brand .lamp-glow { fill: var(--lamp); opacity: .28; }
+.brand .lamp-light { fill: var(--lamp); }
+.brand .lamp-post { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }

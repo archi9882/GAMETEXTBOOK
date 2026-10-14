@@ -10,6 +10,7 @@ import { grade } from "./questions.js";
 import { emptyProgress, recordCorrect, skillLevel, lampState, learnableSkills, isSolved } from "./progress.js";
 import { openStore } from "./store.js";
 import { isClassWorld } from "./share.js";
+import { createSkillTree } from "./skill-tree.js";
 
 const TIER_NAME = { 1: "初階", 2: "中階", 3: "高階" };
 const META_SAVE_MS = 2000;
@@ -17,7 +18,7 @@ const $ = (id) => document.getElementById(id);
 
 const state = {
   store: null, world: null, complete: false, issues: { errors: [], warnings: [] },
-  progress: emptyProgress(), map: null, view: null, panel: null, target: null, lastMetaSave: 0,
+  progress: emptyProgress(), map: null, view: null, panel: null, tree: null, target: null, lastMetaSave: 0,
 };
 
 async function safe(promise) {
@@ -39,7 +40,18 @@ const practiceById = (id) => state.world.practices.find((p) => p.id === id);
 function setPanelOpen(open) { document.body.classList.toggle("panel-open", open); }
 function openPanel(show) { setPanelOpen(true); show(); }
 
+const isLit = (s) => skillLevel(state.progress, s, state.world) >= 1;
+const litShare = (skills) => (skills.length ? skills.filter(isLit).length / skills.length : 0);
+
+// Windows light up with the share of the chapter's skills lit: none, one, then both at 100 %
+function windowsOf(clusterId) {
+  const share = litShare(state.world.skills.filter((s) => s.cluster === clusterId));
+  return share >= 1 ? 2 : share > 0 ? 1 : 0;
+}
+
 function objectState(obj) {
+  if (obj.kind === "house") return { windows: windowsOf(obj.cluster) };
+  if (obj.kind === "hall") return { lit: state.world.skills.length > 0 && state.world.skills.every(isLit) };
   if (obj.kind === "lamp") {
     const s = skillById(obj.skill);
     return { lamp: s ? lampState(state.progress, s, state.world) : "blocked" };
@@ -59,6 +71,8 @@ function onInteract(obj) {
     const next = list.find((p) => !isSolved(state.progress, p)) ?? list[0];
     openPanel(() => (next ? state.panel.openPractice(next.id) : state.panel.openSkill(obj.skill)));
   } else if (obj.kind === "gym") toast("道館：即將開放");
+  else if (obj.kind === "gate") toast("晉階關卡：即將開放");
+  else if (obj.kind === "hall") toast("最終試煉：即將開放");
   else if (obj.kind === "house") toast("這戶人家不在家。");
 }
 
@@ -114,6 +128,27 @@ function answer(practice, prepared, response) {
   return { ...res, xp: rec.xp };
 }
 
+// Lamp state for the skill tree; "due" arrives with review schedules in engine D
+function treeState(skill) {
+  const st = lampState(state.progress, skill, state.world);
+  return st === "blocked" ? "locked" : st;
+}
+
+function openTree() {
+  state.panel.close();
+  state.tree ??= createSkillTree({
+    state: treeState,
+    level: (s) => skillLevel(state.progress, s, state.world),
+    onOpenSkill: (id) => openPanel(() => state.panel.openSkill(id)),
+    onGoTo: (id) => {
+      const lamp = state.map.objects.find((o) => o.kind === "lamp" && o.skill === id);
+      if (!lamp || !state.view.goTo(lamp)) toast("地圖上找不到這盞街燈");
+    },
+    onClose: () => $("btn-tree").focus(),
+  });
+  state.tree.open(state.world, state.target?.skill);
+}
+
 function openBookMap() {
   const items = state.map.towns.map((t) => ({
     label: `${t.name}（${TIER_NAME[t.tier] ?? `第 ${t.tier} 級`}）`,
@@ -152,7 +187,9 @@ function startWorld(rec, pos) {
     world: () => state.world, progress: () => state.progress, answer, onClose: () => setPanelOpen(false),
   });
   state.panel.close();
-  state.view = createMapView($("map"), state.map, { start: pos, objectState, target: () => state.target, onInteract, onArrive });
+  state.view = createMapView($("map"), state.map, {
+    start: pos, objectState, target: () => state.target, onInteract, onArrive, ambient: () => litShare(state.world.skills),
+  });
   $("welcome").hidden = true;
   $("hud").hidden = false;
   $("actions").hidden = false;
@@ -193,6 +230,7 @@ async function boot() {
     toast("目前沒有建議的下一盞街燈");
   });
   $("btn-book").addEventListener("click", openBookMap);
+  $("btn-tree").addEventListener("click", openTree);
   $("hud-issues").addEventListener("click", openIssues);
   // ?world=<id> from the home page wins over the last world played
   const wanted = new URLSearchParams(location.search).get("world");

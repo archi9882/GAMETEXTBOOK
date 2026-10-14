@@ -10,7 +10,7 @@ test("the site includes the app, engine, framework and demo, and precaches them"
   const dir = mkdtempSync(join(tmpdir(), "site-"));
   try {
     buildSite(dir);
-    for (const f of ["index.html", "manifest.webmanifest", "app/index.html", "engine/index.html", "engine/vendor/katex/katex.min.js",
+    for (const f of ["index.html", "manifest.webmanifest", "app/index.html", "engine/index.html", "engine/theme.css", "engine/vendor/katex/katex.min.js",
       "framework/expert-quest-framework.md", "examples/openstax-kinematics/world.json", "sw.js", ".nojekyll"]) {
       assert.ok(existsSync(join(dir, f)), f);
     }

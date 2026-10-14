@@ -1,20 +1,26 @@
 // Build the pixel-tile region map for a world (design spec 2026-10-09, section 4.1).
 // Pure and deterministic: the same world always produces the same map; no DOM access.
 //
-// Region, left to right: forest border | town (chapter 1) | road with tall grass | town (chapter 2) | ...
-// A tier increase adds a cliff band with stairs between two towns.
+// Region: towns (one per chapter) in a snake of rows, at most five per row, joined by roads with tall grass
+// (engine C1 design, 2026-10-14, section 3). A tier increase puts a cliff with stairs and a gate on the road;
+// the road ends at the final hall below the last town. A world with one chapter is a single town.
 // Inside a town (rows relative to the town's top):
 //   1-3  houses            2-5  gym at the east end
 //   5    lamps (north side of the street) with a sign right after each lamp
 //   6    main street       8-10 commission npcs below their lamp
 //   west alley (optional skills) runs south from the street when needed
 
-export const WALKABLE = new Set(["grass", "meadow", "plateau", "pave", "sand", "tall", "stairs", "flower"]);
+export const WALKABLE = new Set(["grass", "meadow", "plateau", "pave", "sand", "tall", "stairs", "flower", "park", "dock", "brick", "stone", "plaza"]);
+
+// Town ground by the chapter's most common knowledge type (engine C1 design 3.2)
+export const LAND = { concept: "park", principle: "dock", procedure: "brick", fact: "stone", judgment: "plaza" };
 
 const BORDER = 3;              // forest thickness around the region
 const MARGIN = 2;              // open ground between the border and the first or last town
-const ROAD = 8;                // road length between two towns
-const CLIFF = 3;               // width of the cliff band at a tier increase
+const ROAD = 8;                // minimum road length between two towns in a row
+const VGAP = 8;                // rows between two rows of towns
+const MAX_COLS = 5;            // towns per row
+const HALL_W = 5, HALL_H = 4;  // final hall below the last town
 const TOWN_TOP = BORDER + 2;   // first row of every town
 const STREET = 6;              // main street row inside a town
 const MIN_TOWN_W = 16, MIN_TOWN_H = 11;
@@ -81,9 +87,13 @@ function planTown(world, cluster, byId) {
   const alley = ordered.filter((id) => kindOf(id) === "optional");
   const lamps = [...main, ...edge];
   const left = alley.length ? 3 : 0;
+  const counts = {};
+  for (const id of ordered) { const k = byId.get(id).ktype?.[0]; if (k) counts[k] = (counts[k] ?? 0) + 1; }
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
   return {
     cluster, lamps, alley, left,
     tier: cluster.tier ?? 1,
+    land: LAND[top] ?? "park",
     w: Math.max(MIN_TOWN_W, left + 2 + 2 * lamps.length + 1 + GYM_W),
     h: Math.max(MIN_TOWN_H, alley.length ? 9 + 2 * alley.length : 0),
   };
@@ -98,19 +108,26 @@ export function buildMap(world) {
   const byId = new Map(world.skills.map((s) => [s.id, s]));
   const plans = world.clusters.map((c) => planTown(world, c, byId));
 
-  // Horizontal placement: towns with roads (plus a cliff at each tier increase) between them
-  let cursor = BORDER + MARGIN;
-  plans.forEach((p, i) => {
-    p.x = cursor;
-    cursor += p.w;
-    const next = plans[i + 1];
-    p.gap = next ? ROAD + (next.tier > p.tier ? CLIFF : 0) : 0;
-    cursor += p.gap;
-  });
-  const width = Math.max(cursor + MARGIN + BORDER, 2 * (BORDER + MARGIN) + MIN_TOWN_W);
+  // Snake placement: rows of towns, left to right then right to left (engine C1 design 3.1)
+  const n = plans.length;
+  const cols = n <= 1 ? 1 : Math.min(MAX_COLS, Math.ceil(Math.sqrt(n)));
+  const rows = Math.max(1, Math.ceil(n / cols));
+  const cellW = Math.max(MIN_TOWN_W, ...plans.map((p) => p.w));
   const townH = Math.max(MIN_TOWN_H, ...plans.map((p) => p.h));
-  const height = TOWN_TOP + townH + 2 + BORDER;
-  const sy = TOWN_TOP + STREET;
+  plans.forEach((p, i) => {
+    const row = Math.floor(i / cols), c = i % cols;
+    p.row = row;
+    p.col = row % 2 ? cols - 1 - c : c;
+    p.x = BORDER + MARGIN + p.col * (cellW + ROAD);
+    p.y = TOWN_TOP + row * (townH + VGAP);
+    p.sy = p.y + STREET;
+    p.gymX = p.x + p.w - GYM_W;
+    p.vx = p.gymX - 1;   // free column from top to bottom of the town: roads to other rows use it
+  });
+  const hasHall = n > 1;
+  const width = Math.max(2 * (BORDER + MARGIN) + cols * cellW + (cols - 1) * ROAD, 2 * (BORDER + MARGIN) + MIN_TOWN_W);
+  const height = TOWN_TOP + rows * townH + (rows - 1) * VGAP + (hasHall ? VGAP + HALL_H : 0) + 2 + BORDER;
+  const sy0 = TOWN_TOP + STREET;
 
   const tiles = Array.from({ length: height }, () => Array(width).fill("grass"));
   const reserved = new Set();
@@ -132,17 +149,15 @@ export function buildMap(world) {
   }
 
   for (const p of plans) {
-    const ox = p.x, oy = TOWN_TOP;
-    const ground = p.tier > 1 ? "plateau" : "meadow";
-    for (let y = oy; y < oy + p.h; y++) for (let x = ox; x < ox + p.w; x++) set(x, y, ground);
+    const ox = p.x, oy = p.y, sy = p.sy;
+    for (let y = oy; y < oy + p.h; y++) for (let x = ox; x < ox + p.w; x++) set(x, y, p.land);
     reserve(ox - 1, oy - 1, ox + p.w, oy + p.h);
     for (let x = ox; x < ox + p.w; x++) set(x, sy, "pave");
 
-    const gymX = ox + p.w - GYM_W;
-    for (let hx = ox + p.left + 1, n = 0; hx + HOUSE_W <= gymX - 1; hx += HOUSE_W + 2, n++) {
-      objects.push({ kind: "house", x: hx, y: oy + 1, w: HOUSE_W, h: HOUSE_H, roof: n % 2 });
+    for (let hx = ox + p.left + 1, k = 0; hx + HOUSE_W <= p.gymX - 1; hx += HOUSE_W + 2, k++) {
+      objects.push({ kind: "house", x: hx, y: oy + 1, w: HOUSE_W, h: HOUSE_H, roof: k % 2, land: p.land, cluster: p.cluster.id, index: k });
     }
-    objects.push({ kind: "gym", x: gymX, y: oy + 2, w: GYM_W, h: GYM_H, boss: p.cluster.boss ?? null, cluster: p.cluster.id });
+    objects.push({ kind: "gym", x: p.gymX, y: oy + 2, w: GYM_W, h: GYM_H, boss: p.cluster.boss ?? null, cluster: p.cluster.id });
 
     p.lamps.forEach((id, k) => {
       const lx = ox + p.left + 2 + 2 * k;
@@ -153,27 +168,68 @@ export function buildMap(world) {
       for (let y = sy + 1; y <= oy + p.h - 2; y++) set(ox + 1, y, "pave");
       p.alley.forEach((id, j) => {
         const ly = sy + 2 + 2 * j;
-        addSkillObjects(id, ox, ly, [ox, ly + 1], (n) => (n < MAX_NPC_ALLEY ? [ox + 2 + n, ly] : null));
+        addSkillObjects(id, ox, ly, [ox, ly + 1], (k) => (k < MAX_NPC_ALLEY ? [ox + 2 + k, ly] : null));
       });
     }
 
-    towns.push({ cluster: p.cluster.id, name: p.cluster.name ?? p.cluster.id, tier: p.tier, x: ox, y: oy, w: p.w, h: p.h, entrance: { x: ox, y: sy } });
-
-    if (p.gap) {
-      const rx0 = ox + p.w, rx1 = rx0 + p.gap - 1;
-      for (let x = rx0; x <= rx1; x++) set(x, sy, "sand");
-      for (let x = rx0 + 2; x <= rx0 + ROAD - 3; x++) for (const dy of [-3, -2, -1, 1, 2, 3]) set(x, sy + dy, "tall");
-      reserve(rx0, sy - 4, rx1, sy + 4);
-      for (let x = rx0 + ROAD; x <= rx1; x++) {
-        for (let y = BORDER; y < height - BORDER; y++) set(x, y, "cliff");
-        set(x, sy, "stairs");
-        reserve(x, BORDER, x, height - BORDER - 1);
-      }
-    }
+    towns.push({ cluster: p.cluster.id, name: p.cluster.name ?? p.cluster.id, tier: p.tier, land: p.land, x: ox, y: oy, w: p.w, h: p.h, entrance: { x: ox, y: sy } });
   }
 
-  const spawn = towns.length ? { x: towns[0].entrance.x + 1, y: sy } : { x: BORDER + MARGIN + 1, y: sy };
-  if (!towns.length) reserve(BORDER + MARGIN, sy - 2, width - BORDER - MARGIN - 1, sy + 2);
+  // Gate across a road where the next chapter is a higher tier: cliff tiles, stairs on the road, a gate object
+  const gate = (cells, stair, gx, gy, from, to) => {
+    for (const [x, y] of cells) set(x, y, "cliff");
+    set(stair[0], stair[1], "stairs");
+    objects.push({ kind: "gate", x: gx, y: gy, w: 2, h: 1, from, to });
+  };
+
+  // Roads between consecutive towns
+  plans.forEach((a, i) => {
+    const b = plans[i + 1];
+    if (!b) return;
+    const up = b.tier > a.tier;
+    if (a.row === b.row) {
+      const [l, r] = a.x < b.x ? [a, b] : [b, a];
+      const rx0 = l.x + l.w, rx1 = r.x - 1, sy = a.sy;
+      for (let x = rx0; x <= rx1; x++) set(x, sy, "sand");
+      for (let x = rx0 + 2; x <= rx1 - 2; x++) for (const dy of [-3, -2, -1, 1, 2, 3]) set(x, sy + dy, "tall");
+      reserve(rx0, sy - 4, rx1, sy + 4);
+      if (up) {
+        const mx = a.x < b.x ? rx1 - 1 : rx0 + 1;
+        const cells = [];
+        for (let y = sy - 4; y <= sy + 4; y++) if (y !== sy) cells.push([mx, y]);
+        gate(cells, [mx, sy], mx, sy - 5, a.tier, b.tier);
+      }
+    } else {
+      // Down from a's free column, across the gap between rows, down into b's free column
+      const mid = a.y + townH + Math.floor(VGAP / 2);
+      for (let y = a.sy + 1; y <= mid; y++) set(a.vx, y, "sand");
+      for (let x = Math.min(a.vx, b.vx); x <= Math.max(a.vx, b.vx); x++) set(x, mid, "sand");
+      for (let y = mid; y < b.sy; y++) set(b.vx, y, "sand");
+      const gx0 = Math.min(a.vx, b.vx) - 4, gx1 = Math.max(a.vx, b.vx) + 4;
+      for (let y = a.y + townH + 1; y < b.y - 1; y++) for (let x = gx0; x <= gx1; x++) {
+        if (y !== mid && x !== a.vx && x !== b.vx && Math.abs(y - mid) <= 2) set(x, y, "tall");
+      }
+      reserve(gx0, a.y + townH, gx1, b.y - 1);
+      if (up) {
+        const gy = b.y - 2, cells = [];
+        for (let x = gx0; x <= gx1; x++) if (x !== b.vx) cells.push([x, gy]);
+        gate(cells, [b.vx, gy], b.vx + 1, gy - 1, a.tier, b.tier);
+      }
+    }
+  });
+
+  // The road ends at the final hall below the last town
+  if (hasHall) {
+    const last = plans[n - 1];
+    const hy = last.y + townH + VGAP;
+    for (let y = last.sy + 1; y < hy; y++) set(last.vx, y, "sand");
+    const hx = last.vx - 2;
+    reserve(hx - 2, last.y + townH, hx + HALL_W + 1, hy + HALL_H);
+    objects.push({ kind: "hall", x: hx, y: hy, w: HALL_W, h: HALL_H, boss: world.schools?.[0]?.finalBoss ?? null });
+  }
+
+  const spawn = towns.length ? { x: towns[0].entrance.x + 1, y: plans[0].sy } : { x: BORDER + MARGIN + 1, y: sy0 };
+  if (!towns.length) reserve(BORDER + MARGIN, sy0 - 2, width - BORDER - MARGIN - 1, sy0 + 2);
 
   // Decorations: forest border with a ragged inner edge, groves, ponds and flowers outside reserved areas
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {

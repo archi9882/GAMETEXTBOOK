@@ -9,6 +9,7 @@
 <link rel="icon" href="../app/icons/icon-192.png">
 <link rel="apple-touch-icon" href="../app/icons/apple-touch-icon.png">
 <script type="module" src="../app/pwa.js"></script>
+<link rel="stylesheet" href="../engine/theme.css">
 <link rel="stylesheet" href="../engine/vendor/katex/katex.min.css">
 <script defer src="../engine/vendor/katex/katex.min.js"></script>
 <script defer src="../engine/vendor/katex/contrib/mhchem.min.js"></script>
@@ -16,13 +17,13 @@
 <style>
   :root {
     --bg: #f7f6f2; --fg: #1d1d1b; --muted: #66655f; --line: #dad8d0; --card: #ffffff;
-    --accent: #2f5fb8; --ok: #1f7a3a; --bad: #b3261e; --warn: #8a5a00;
+    --ok: #1f7a3a; --bad: #b3261e; --warn: #8a5a00;
     color-scheme: light dark;
   }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
+    :root:not([data-theme="light"]) { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
   }
-  :root[data-theme="dark"] { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
+  :root[data-theme="dark"] { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 system-ui, "Noto Sans TC", sans-serif; }
   header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
@@ -30,7 +31,8 @@
   header a { color: inherit; text-decoration: none; }
   main { max-width: 860px; margin: 0 auto; padding: 16px; }
   button, .btn { font: inherit; cursor: pointer; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--fg); text-decoration: none; display: inline-block; }
-  .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  a { color: var(--accent); }
   button:disabled { opacity: 0.5; cursor: default; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -68,7 +70,7 @@
 </head>
 <body>
 <header>
-  <h1><a href="#/">專家養成記</a></h1>
+  <h1><a class="brand" href="#/"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="lamp-glow" cx="12" cy="7" r="7"/><circle class="lamp-light" cx="12" cy="7" r="3.2"/><path class="lamp-post" d="M12 11 V22 M8 22 H16"/></svg>專家養成記</a></h1>
   <a class="btn" href="#/join">加入班級世界</a>
   <a class="btn" href="#/start">新增世界</a>
   <a class="btn" href="#/import">匯入</a>

@@ -5,6 +5,8 @@ import { findPath, isWalkable, objectAt, interactTarget } from "./layout.js";
 const STEP_MS = 150;      // time to walk one tile
 const VIEW_W = 15, VIEW_H = 10;   // tiles that should fit on screen at the chosen scale
 const ANIM_MS = 180;      // water and glow animation frame length
+const DUSK_MAX = 0.62;    // night tint when no lamp is lit (engine C1 design 4)
+const LAMP_LIGHT = 3.2, HERO_LIGHT = 1.8;   // light radii in tiles
 const MOVES = {
   arrowup: [0, -1, "up"], w: [0, -1, "up"],
   arrowdown: [0, 1, "down"], s: [0, 1, "down"],
@@ -17,7 +19,8 @@ const TEXT_FIELDS = new Set(["INPUT", "TEXTAREA", "SELECT"]);
  * @param {HTMLCanvasElement} canvas
  * @param {object} map  from layout.buildMap
  * @param {{ start?: {x:number,y:number}, objectState(obj): object, target(): object|null,
- *           onInteract(obj): void, onArrive?(pos: {x:number,y:number}): void }} hooks
+ *           onInteract(obj): void, onArrive?(pos: {x:number,y:number}): void,
+ *           ambient?(): number }} hooks  ambient: share of lamps lit, 0..1; the map darkens toward dusk as it falls
  */
 export function createMapView(canvas, map, hooks) {
   const g = canvas.getContext("2d");
@@ -27,6 +30,7 @@ export function createMapView(canvas, map, hooks) {
   let path = [], pending = null, held = null, arrivePending = false;
   let scale = 3, dpr = 1, frame = 0, lastAnim = 0, running = true;
   let camera = { ox: 0, oy: 0 };
+  const shade = document.createElement("canvas");
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -103,14 +107,54 @@ export function createMapView(canvas, map, hooks) {
     const visible = map.objects.filter((o) => o.x + (o.w ?? 1) >= x0 && o.x <= x1 && o.y + (o.h ?? 1) >= y0 && o.y <= y1 + 1);
     const items = [...visible.map((o) => ({ z: o.y + (o.h ?? 1), o })), { z: hy + 1.01, hero: true }].sort((a, b) => a.z - b.z);
     const target = hooks.target();
+    const lights = [];
     for (const item of items) {
       if (item.hero) {
         paintHero(g, hx * T, hy * T, hero.facing, moving(now) ? Math.floor(now / 120) % 2 : 0);
         continue;
       }
-      paintObject(g, item.o, item.o.x * T, item.o.y * T, { ...hooks.objectState(item.o), frame });
-      if (item.o === target) paintTargetMarker(g, item.o.x * T, item.o.y * T, frame);
+      const st = hooks.objectState(item.o);
+      paintObject(g, item.o, item.o.x * T, item.o.y * T, { ...st, frame });
+      if (st.lamp === "lit") lights.push([item.o.x * T + 8, item.o.y * T - 2, LAMP_LIGHT]);
     }
+    lights.push([hx * T + 8, hy * T + 8, HERO_LIGHT]);
+    drawDusk(W, H, lights);
+    if (target && visible.includes(target)) { g.setTransform(scale, 0, 0, scale, camera.ox, camera.oy); paintTargetMarker(g, target.x * T, target.y * T, frame); }
+  }
+
+  // Night tint over the whole view, with holes of warm light around lit lamps and the hero
+  function drawDusk(W, H, lights) {
+    const dark = DUSK_MAX * (1 - Math.max(0, Math.min(1, hooks.ambient?.() ?? 1)));
+    if (dark < 0.01) return;
+    if (shade.width !== W || shade.height !== H) { shade.width = W; shade.height = H; }
+    const s = shade.getContext("2d");
+    s.globalCompositeOperation = "source-over";
+    s.clearRect(0, 0, W, H);
+    s.fillStyle = `rgba(14, 18, 42, ${dark.toFixed(3)})`;
+    s.fillRect(0, 0, W, H);
+    s.globalCompositeOperation = "destination-out";
+    const px = (v, o) => o + v * scale;
+    for (const [x, y, r] of lights) {
+      const cx = px(x, camera.ox), cy = px(y, camera.oy), rad = r * T * scale;
+      if (cx < -rad || cy < -rad || cx > W + rad || cy > H + rad) continue;
+      const grad = s.createRadialGradient(cx, cy, 0, cx, cy, rad);
+      grad.addColorStop(0, "rgba(0,0,0,1)"); grad.addColorStop(0.55, "rgba(0,0,0,0.75)"); grad.addColorStop(1, "rgba(0,0,0,0)");
+      s.fillStyle = grad;
+      s.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
+    }
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.drawImage(shade, 0, 0);
+    // A faint warm wash where the lamps shine
+    g.globalCompositeOperation = "lighter";
+    for (const [x, y, r] of lights.slice(0, -1)) {
+      const cx = px(x, camera.ox), cy = px(y, camera.oy), rad = r * T * scale * 0.8;
+      if (cx < -rad || cy < -rad || cx > W + rad || cy > H + rad) continue;
+      const grad = g.createRadialGradient(cx, cy, 0, cx, cy, rad);
+      grad.addColorStop(0, `rgba(255, 196, 110, ${(0.22 * dark).toFixed(3)})`); grad.addColorStop(1, "rgba(255, 196, 110, 0)");
+      g.fillStyle = grad;
+      g.fillRect(cx - rad, cy - rad, rad * 2, rad * 2);
+    }
+    g.globalCompositeOperation = "source-over";
   }
 
   function loop(now) {

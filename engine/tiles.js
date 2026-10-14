@@ -19,6 +19,15 @@ const C = {
   door: "#6b4a2b", win: "#a9dcf5", winFrame: "#5d7f93",
   post: "#4a4a4a", bulb: "#fff4b0", glow: "rgba(255, 228, 120, 0.35)", bulbOff: "#9a9a9a", star: "#ffd54a",
   skin: "#f6d2ad", eye: "#333", legs: "#3b3f58",
+  winLit: "#ffd27a", winLitHi: "#fff1c4",
+};
+// Town grounds and roofs by landscape (engine C1 design 3.2)
+const LANDS = {
+  park: { base: "#9ed58a", dot: "#b6e3a0", roofs: [["#5f9e4c", "#467a37"], ["#c9704a", "#9c5236"]] },
+  dock: { base: "#b9c7d3", dot: "#a3b3c2", line: "#8fa1b2", roofs: [["#3f78b5", "#2d5a8a"], ["#e3e8ee", "#b8c2cc"]] },
+  brick: { base: "#d9b08a", dot: "#c79a72", line: "#b98563", roofs: [["#a8532f", "#7d3c21"], ["#6b5a4a", "#4f4236"]] },
+  stone: { base: "#cfcbc2", dot: "#bcb7ac", line: "#aaa497", roofs: [["#5d6370", "#454a55"], ["#8a7354", "#6a573f"]] },
+  plaza: { base: "#d6c6d8", dot: "#c3b0c6", line: "#ac96b0", roofs: [["#8a5aa3", "#684379"], ["#c98aa6", "#a06a83"]] },
 };
 const SHIRTS = ["#3b6fd1", "#d1883b", "#3bb08f", "#b04a8f", "#8f6fd1", "#5c8f3b"];
 const HAIR = ["#5a3a22", "#222222", "#c2a14d", "#7a3b22", "#3d2a18", "#a35a2a"];
@@ -46,6 +55,15 @@ function sand(g, X, Y, tx, ty, n) {
   if (!n.down) px(g, X, Y + 15, T, 1, C.sandEdge);
   if (!n.left) px(g, X, Y, 1, T, C.sandEdge);
   if (!n.right) px(g, X + 15, Y, 1, T, C.sandEdge);
+}
+
+// Town ground: flat colour with a faint pattern; harbour, brick, stone and plaza are laid in courses
+function landGround(g, X, Y, land, tx, ty) {
+  const L = LANDS[land];
+  ground(g, X, Y, L.base, L.dot, tx, ty);
+  if (!L.line) return;
+  px(g, X, Y + 15, T, 1, L.line);
+  px(g, X + ((ty % 2) ? 0 : 8), Y, 1, 15, L.line);
 }
 
 function pave(g, X, Y) {
@@ -119,19 +137,43 @@ export function paintTile(g, kind, X, Y, ctx) {
     case "water": water(g, X, Y, ctx.same(["water"]), ctx.frame + tx * 3 + ty); break;
     case "cliff": cliff(g, X, Y, ctx.same(["cliff", "stairs"])); break;
     case "stairs": stairs(g, X, Y); break;
+    case "park": case "dock": case "brick": case "stone": case "plaza": landGround(g, X, Y, kind, tx, ty); break;
     default: px(g, X, Y, T, T, "#000");
   }
 }
 
-function house(g, X, Y, roofIndex) {
-  const [roof, roofDark] = C.roofs[roofIndex % C.roofs.length];
+function house(g, X, Y, roofIndex, land, lit) {
+  const palette = LANDS[land]?.roofs ?? C.roofs;
+  const [roof, roofDark] = palette[roofIndex % palette.length];
   const W = 4 * T;
   px(g, X + 2, Y + 2, W - 4, 20, roof);
   for (let k = 0; k < 5; k++) px(g, X + 2, Y + 4 + k * 4, W - 4, 1, roofDark);
   px(g, X, Y + 20, W, 3, roofDark);
   px(g, X + 3, Y + 23, W - 6, 23, C.wall); px(g, X + 3, Y + 42, W - 6, 4, C.wallShade);
   px(g, X + 26, Y + 30, 12, 16, C.door); px(g, X + 36, Y + 37, 1, 2, "#e8c66a");
-  for (const wx of [8, 44]) { px(g, X + wx, Y + 28, 12, 9, C.winFrame); px(g, X + wx + 1, Y + 29, 10, 7, C.win); px(g, X + wx + 1, Y + 29, 4, 2, "#e9f8ff"); }
+  // Windows glow as the chapter's lamps come on (lit: 0, 1 or 2 windows)
+  [8, 44].forEach((wx, k) => {
+    const on = k < lit;
+    px(g, X + wx, Y + 28, 12, 9, C.winFrame);
+    px(g, X + wx + 1, Y + 29, 10, 7, on ? C.winLit : C.win);
+    px(g, X + wx + 1, Y + 29, 4, 2, on ? C.winLitHi : "#e9f8ff");
+  });
+}
+
+// Stone gate beside the road at a tier increase (two tiles wide)
+function gateArt(g, X, Y) {
+  px(g, X + 2, Y - 10, 5, 26, "#8a93a6"); px(g, X + 25, Y - 10, 5, 26, "#8a93a6");
+  px(g, X, Y - 14, 32, 5, "#a7afbf"); px(g, X + 1, Y - 13, 30, 1, "#c9cfda");
+  px(g, X + 2, Y + 14, 5, 2, "#5d6370"); px(g, X + 25, Y + 14, 5, 2, "#5d6370");
+}
+
+// Final hall at the end of the road
+function hall(g, X, Y, lit) {
+  const W = 5 * T;
+  px(g, X + 4, Y + 18, W - 8, 46, "#59607a"); px(g, X + 4, Y + 60, W - 8, 4, "#3e4459");
+  for (const tx of [4, 28, 52]) { px(g, X + tx, Y + 4, 24, 16, "#6e7692"); px(g, X + tx + 8, Y, 8, 6, "#6e7692"); }
+  px(g, X + 30, Y + 36, 20, 28, lit ? C.winLit : "#1f2330");
+  px(g, X + 12, Y + 28, 8, 10, lit ? C.winLit : "#1f2330"); px(g, X + 60, Y + 28, 8, 10, lit ? C.winLit : "#1f2330");
 }
 
 function gym(g, X, Y) {
@@ -184,7 +226,9 @@ function bubble(g, X, Y) {
  */
 export function paintObject(g, obj, X, Y, state) {
   switch (obj.kind) {
-    case "house": house(g, X, Y, obj.roof ?? 0); break;
+    case "house": house(g, X, Y, obj.roof ?? 0, obj.land, state.windows ?? 0); break;
+    case "gate": gateArt(g, X, Y); break;
+    case "hall": hall(g, X, Y, !!state.lit); break;
     case "gym": gym(g, X, Y); break;
     case "lamp": lamp(g, X, Y, state.lamp ?? "blocked", state.frame); break;
     case "sign": sign(g, X, Y); break;
