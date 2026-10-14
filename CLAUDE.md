@@ -69,9 +69,10 @@ CLAUDE.md
 LICENSE                         # AGPL-3.0（程式碼）
 package.json                    # npm test、npm run validate、npm run vendor:katex、npm run vendor:smiles
 index.html、manifest.webmanifest # 網站入口（轉到 app/）與 PWA 設定
-.github/workflows/
-  pages.yml                     # 推到 main：測試、建置、部署到 GitHub Pages
-  test.yml                      # pull request：測試與建置
+.github/
+  workflows/pages.yml           # 推到 main：測試、建置、部署到 GitHub Pages
+  workflows/test.yml            # pull request：測試與建置（分支保護要求通過）
+  ISSUE_TEMPLATE/               # 三種問題回報範本
 framework/
   LICENSE                       # CC BY-SA 4.0（框架文件）
   expert-quest-framework.md     # 唯一真實來源（目前 v1.3；附錄 A 為流派清單）
@@ -84,7 +85,7 @@ tools/
   build-site.mjs                # 建出 _site/（只含 app、engine、framework、示範世界）並產生 service worker
   vendor-katex.mjs、vendor-smiles.mjs # 把 KaTeX、SmilesDrawer 複製進 engine/vendor/
   cors-test.html                # API 模式的跨網域測試頁
-test/                           # node:test 測試；fixtures/ 為測試用世界檔
+test/                           # node:test 測試；fixtures/ 為測試用世界檔與凍結的舊格式（compat.test.mjs）
 app/                            # 參考遊戲本體的首頁（網頁應用），以網址 # 切換頁面
   index.html、app.js            # 世界清單、匯入工作台、審閱、班級版、加入班級世界、備份、教學、關於
   workbench.js                  # 貼上內容 → 世界紀錄：辨識片段、合併、驗證；保留審閱標記
@@ -165,6 +166,16 @@ node tools/build-site.mjs   # 建出 _site/，內容與 GitHub Pages 上相同
 - 部署：推到 `main` 後，`.github/workflows/pages.yml` 測試、建置並部署到 GitHub Pages（需在 repo 的 Settings → Pages 把 Source 設為 GitHub Actions）。
 - 網站只發布 `app/`、`engine/`、`framework/`、示範世界與入口檔；新增要公開的檔案時，要同時改 `tools/build-site.mjs` 的清單與 `test/build-site.test.mjs`。
 
+### 維護規則（2026-10-14）
+
+- **只有一個 repo**：開發一律在 `archi9882/GAMETEXTBOOK`。舊的 `archi9882/GAMELIFE` 封存、保持私人，不再修改。
+- **分支與 PR**：`main` 一推就上線，所以不直接改 `main`。每項工作開一個分支 → 開 PR → `Test` 檢查通過 → 使用者同意後合併 → 自動部署。`main` 設有分支保護，要求 `Test` 通過才能合併。
+- **不弄壞使用者的資料**：世界、進度與備份只存在使用者的瀏覽器，壞了無法替他們復原。
+  - schema 的 `framework` 版本只能增加，舊版本永遠接受；框架改版不得讓舊世界檔驗證失敗。
+  - 改動備份格式（`app/backup.js` 的 `BACKUP_VERSION`）、IndexedDB 結構（`engine/store.js` 的 `DB_VERSION`）或世界紀錄的欄位時，必須提高版本號並寫轉換程式，舊格式由轉換程式讀入。
+  - `test/compat.test.mjs` 與 `test/fixtures/backup-v1.json` 凍結了舊格式；測試失敗時加轉換程式，不得修改這些 fixture 讓測試通過。
+- **問題回報**：GitHub Issues 只接受三種範本（`.github/ISSUE_TEMPLATE/`）：網站錯誤、AI 沒有照框架生成、題目內容有誤。範本提醒回報者不要貼上原書內容；處理回報時也不要把原書內容寫進 repo。框架類回報改寫框架後，記錄在第 8 節。
+
 ---
 
 ## 5. 測試框架
@@ -235,7 +246,9 @@ node tools/build-site.mjs   # 建出 _site/，內容與 GitHub Pages 上相同
 12. **M1 可公開試玩版（教師優先）**（設計：`docs/superpowers/specs/2026-10-12-m1-teacher-release-design.md`；第 2 節第 24、28 條）：
     - ~~程式部分~~（2026-10-12 完成）：框架 v1.1、引擎 B、完整備份、審閱頁（`app/review.js`）、班級版匯出（`engine/share.js`）與學生加入（`#/join`）、示範世界（`examples/openstax-kinematics/`，測試紀錄 `docs/test-log/2026-10-12-demo-world.md`）、PWA 與離線（`tools/build-site.mjs` 產生 `_site/` 與 service worker）、關於頁、GitHub Pages 部署（`.github/workflows/pages.yml`）、手機模擬測試（`docs/test-log/2026-10-12-mobile-and-offline.md`）
     - ~~公開前清理~~（2026-10-14：移除依第一本測試書製作的 `examples/` 人工範例、`pipeline/` 與 `prototypes/`；「關於」頁加入使用條款與免責聲明；以乾淨的歷史另開公開 repo `archi9882/GAMETEXTBOOK`）
-    - 使用者要做：repo 設為公開（AGPL 原始碼連結）、Settings → Pages → Source 選 GitHub Actions；上線後用實機 iOS Safari 與 Android Chrome 補測
+    - ~~上線~~（2026-10-14：`GAMETEXTBOOK` 公開、GitHub Pages 部署成功，網址 https://archi9882.github.io/GAMETEXTBOOK/；README）
+    - ~~維護機制~~（2026-10-14：見第 4 節「維護規則」；使用者要做：封存 `GAMELIFE`、為 `main` 設分支保護）
+    - 使用者要做：用實機 iOS Safari 與 Android Chrome 補測
     - 驗收：找一到兩位老師只靠公開網址與教學頁，用 claude.ai 生成一章、審閱、匯出班級版；學生用手機加入。結果寫入 `docs/test-log/`
 13. M2（設計 3.9、D6）：引擎 D（分級測驗、間隔複習、遭遇）→ C（技能樹、成就、Boss）；班級進度回報（學生匯出學習報告檔、老師匯入彙整）；技能索引匯出。
 

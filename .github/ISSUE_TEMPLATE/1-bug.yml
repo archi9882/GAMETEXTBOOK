@@ -1,0 +1,35 @@
+name: 網站或遊戲的錯誤
+description: 網站打不開、按鈕沒反應、匯入失敗、畫面跑版、進度不見等
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        謝謝回報！請**不要貼上書的原文、整份世界檔或完整備份**（可能含有受著作權保護的內容）。需要附檔時，請先確認內容可以公開。
+  - type: textarea
+    id: what
+    attributes:
+      label: 發生了什麼事
+      description: 你做了什麼、預期看到什麼、實際看到什麼。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重現步驟
+      placeholder: |
+        1. 打開首頁
+        2. 按「匯入」
+        3. …
+  - type: input
+    id: device
+    attributes:
+      label: 裝置與瀏覽器
+      placeholder: 例如 iPhone 15、iOS 18、Safari；或 Windows 11、Chrome 141
+    validations:
+      required: true
+  - type: textarea
+    id: message
+    attributes:
+      label: 錯誤訊息或截圖
+      description: 畫面上的中文錯誤訊息、工作台列出的問題，或截圖。

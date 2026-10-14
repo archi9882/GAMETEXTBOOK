@@ -1,0 +1,39 @@
+name: AI 沒有照框架生成
+description: AI 跳過步驟、片段格式錯誤、修正請求修不好、標記錯誤等，需要修改框架寫法的問題
+labels: ["framework"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        這類回報能幫助我們改寫框架，讓各家 AI 更容易照做。請**不要貼上書的原文**；AI 的回覆若含有改寫自原書的題目，只貼出問題所在的那一小段，或用自己的話描述。
+  - type: input
+    id: ai
+    attributes:
+      label: 使用的 AI
+      placeholder: 例如 claude.ai、ChatGPT、Gemini、本機模型
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 框架版本
+      description: 框架檔第一行的版本號，例如 v1.3
+    validations:
+      required: true
+  - type: input
+    id: doc
+    attributes:
+      label: 文件類型
+      placeholder: 例如 大學教科書（約 600 頁）、期刊論文、自編講義、掃描版 PDF
+  - type: textarea
+    id: what
+    attributes:
+      label: AI 做了什麼、應該怎麼做
+      description: 可以引用框架的章節，例如「4.6 規定每次只輸出一個片段，但 AI 一次輸出了三章」。
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: 修正請求或工作台訊息（選填）
+      description: 工作台列出的問題、或「複製修正請求」的內容。
