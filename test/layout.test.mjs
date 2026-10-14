@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
-  buildMap, orderSkills, findPath, isWalkable, objectAt, interactTarget, distances, distanceTo,
+  buildMap, orderSkills, findPath, isWalkable, objectAt, interactTarget, distances, distanceTo, LAND,
 } from "../engine/layout.js";
 
 const base = JSON.parse(readFileSync(new URL("./fixtures/valid-world.json", import.meta.url), "utf8"));
@@ -76,11 +76,52 @@ test("a tier increase puts a cliff with stairs on the road", () => {
   assert.ok(!buildMap(world()).tiles.flat().includes("cliff"));
 });
 
-test("higher-tier towns use plateau ground", () => {
-  const m = buildMap(twoTownWorld());
-  const t = m.towns[1];
-  assert.equal(m.tiles[t.y][t.x], "plateau");
-  assert.equal(m.tiles[m.towns[0].y][m.towns[0].x], "meadow");
+test("town ground follows the chapter's most common knowledge type", () => {
+  const w = twoTownWorld();
+  for (const id of ["physics/s1", "physics/s2", "physics/s3"]) w.skills.find((x) => x.id === id).ktype = ["procedure"];
+  const m = buildMap(w);
+  assert.equal(m.towns[1].land, LAND.procedure);
+  assert.equal(m.tiles[m.towns[1].y][m.towns[1].x], LAND.procedure);
+  assert.ok(isWalkable(m, m.towns[1].x, m.towns[1].y + 1) || objectAt(m, m.towns[1].x, m.towns[1].y + 1));
+});
+
+// A whole book: n chapters of three chained skills, tiers rising every seventh chapter
+function bookWorld(n) {
+  const w = world();
+  w.schools[0].tiers = [1, 2, 3].map((t) => ({ tier: t, name: `t${t}`, boss: `boss-t${t}` }));
+  w.clusters = []; w.skills = []; w.practices = [];
+  for (let c = 1; c <= n; c++) {
+    const tier = c <= 7 ? 1 : c <= 14 ? 2 : 3;
+    const ids = [1, 2, 3].map((k) => `physics/c${c}s${k}`);
+    ids.forEach((id, k) => w.skills.push({ ...structuredClone(base.skills[0]), id, num: `${c}.${k + 1}`, pre: k ? [ids[k - 1]] : [], kind: "core", cluster: `ch${c}`, tier, ktype: ["concept"] }));
+    w.practices.push({ ...structuredClone(base.practices[1]), id: `p${c}`, skill: ids[2], context: "commission" });
+    w.clusters.push({ id: `ch${c}`, school: w.schools[0].id, tier, name: `第 ${c} 章`, skills: ids, boss: `gym${c}` });
+  }
+  return w;
+}
+
+test("a whole book is laid out in a snake of rows instead of one long row", () => {
+  const m = buildMap(bookWorld(20));
+  assert.equal(m.towns.length, 20);
+  assert.ok(m.width / m.height <= 3, `aspect ${m.width}x${m.height}`);
+  assert.equal(new Set(m.towns.map((t) => t.y)).size, 4, "four rows of five");
+  // the second row runs right to left
+  assert.ok(m.towns[5].x > m.towns[6].x);
+});
+
+test("every lamp, gate and the final hall can be reached in a whole book", () => {
+  const m = buildMap(bookWorld(20));
+  const dist = distances(m, m.spawn);
+  for (const o of m.objects.filter((x) => ["lamp", "gym", "hall"].includes(x.kind))) {
+    assert.ok(distanceTo(m, dist, o) < Infinity, `${o.kind} at ${o.x},${o.y} is unreachable`);
+  }
+  assert.equal(m.objects.filter((o) => o.kind === "gate").length, 2, "one gate per tier increase");
+  assert.equal(m.objects.filter((o) => o.kind === "hall").length, 1);
+});
+
+test("a one-chapter world stays a single town without a final hall", () => {
+  const m = buildMap(world());
+  assert.equal(m.objects.filter((o) => o.kind === "hall" || o.kind === "gate").length, 0);
 });
 
 test("decorations never land inside towns", () => {
