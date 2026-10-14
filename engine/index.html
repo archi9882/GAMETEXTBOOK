@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>專家養成記</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1f3a68">
+<link rel="icon" href="../app/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../app/icons/apple-touch-icon.png">
+<script type="module" src="../app/pwa.js"></script>
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<script defer src="vendor/katex/katex.min.js"></script>
+<script defer src="vendor/katex/contrib/mhchem.min.js"></script>
+<script defer src="vendor/katex/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f6f2; --fg: #1d1d1b; --muted: #66655f; --line: #dad8d0; --accent: #2f5fb8; --ok: #1f7a3a; --bad: #b3261e;
+    --hud: rgba(20, 24, 30, 0.72); --panel-w: min(420px, 38vw); --panel-h: 46vh;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; }
+  }
+  :root[data-theme="dark"] { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #1d3b22; font: 15px/1.6 system-ui, "Noto Sans TC", sans-serif; }
+  button { font: inherit; cursor: pointer; }
+  #map { position: fixed; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100%; display: block; touch-action: none; image-rendering: pixelated; }
+  body.panel-open #map { width: calc(100% - var(--panel-w)); }
+  #hud { position: fixed; left: 10px; top: 10px; display: flex; flex-wrap: wrap; gap: 6px; max-width: calc(100% - 20px); }
+  #hud > * { background: var(--hud); color: #fff; padding: 4px 10px; border-radius: 6px; border: 0; font-size: 13px; }
+  #hud-issues { background: #8a5a00 !important; }
+  #actions { position: fixed; left: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); display: flex; gap: 6px; flex-wrap: wrap; }
+  #actions button, #actions a { background: var(--hud); color: #fff; border: 0; padding: 8px 12px; border-radius: 8px; text-decoration: none; }
+  #panel { position: fixed; top: 0; right: 0; bottom: 0; width: var(--panel-w); background: var(--bg); color: var(--fg);
+    border-left: 1px solid var(--line); overflow-y: auto; transform: translateX(100%); transition: transform .2s ease; }
+  #panel.open { transform: none; }
+  #panel .grip { display: none; }
+  .panel-bar { position: sticky; top: 0; display: flex; justify-content: space-between; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .panel-body { padding: 12px 16px 32px; }
+  .panel-body h2 { margin: 0 0 4px; font-size: 20px; }
+  .panel-body h3 { margin: 18px 0 6px; font-size: 15px; }
+  .meta, .muted { color: var(--muted); font-size: 13px; margin: 2px 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 8px 0; }
+  .tag { border: 1px solid var(--line); border-radius: 10px; padding: 0 8px; font-size: 12px; }
+  .tag.strong { border-color: var(--accent); color: var(--accent); }
+  .box { border-left: 3px solid var(--line); padding: 4px 10px; margin: 10px 0; }
+  .fig { border: 1px dashed var(--line); border-radius: 6px; padding: 6px 10px; color: var(--muted); font-size: 13px; }
+  .note { background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 6px; padding: 6px 10px; }
+  .term { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline dashed; text-underline-offset: 3px; }
+  .link { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; }
+  .ghost { background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 6px; padding: 4px 10px; }
+  .primary { background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 16px; margin-top: 8px; }
+  .practices, .list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .practice { width: 100%; text-align: left; display: flex; justify-content: space-between; gap: 8px; background: none; color: var(--fg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .practice small { color: var(--muted); white-space: nowrap; }
+  .choices { display: grid; gap: 6px; margin-top: 10px; }
+  .choice { text-align: left; background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+  .choice:hover, .practice:hover { border-color: var(--accent); }
+  .num-form { display: flex; gap: 6px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .num { width: 9em; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--fg); font: inherit; }
+  .num-form .primary { margin-top: 0; }
+  .num-form .sign { min-width: 40px; padding: 8px 10px; font-size: 16px; }
+  .order { padding-left: 1.4em; display: grid; gap: 6px; }
+  .order li { display: flex; justify-content: space-between; gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; }
+  .order-btns button { background: none; border: 1px solid var(--line); color: var(--fg); border-radius: 4px; width: 2em; }
+  .sim-row { display: grid; gap: 4px; margin-top: 10px; }
+  .sim-out { font-weight: 600; }
+  .result { border-radius: 8px; padding: 8px 12px; margin-top: 10px; border: 1px solid var(--line); }
+  .result.ok { border-color: var(--ok); } .result.bad { border-color: var(--bad); }
+  .verdict { font-weight: 700; margin: 0 0 6px; }
+  .result.ok .verdict { color: var(--ok); } .result.bad .verdict { color: var(--bad); }
+  .error { color: var(--bad); }
+  #welcome { position: fixed; inset: 0; display: grid; place-content: center; gap: 8px; padding: 16px; text-align: center;
+    background: var(--bg); color: var(--fg); }
+  #welcome h1 { margin: 0; }
+  #toast { position: fixed; left: 50%; top: 56px; transform: translateX(-50%); background: var(--hud); color: #fff; padding: 8px 14px; border-radius: 8px; max-width: 90vw; }
+  [hidden] { display: none !important; }
+  @media (max-width: 720px) {
+    body.panel-open #map { width: 100%; height: calc(100% - var(--panel-h)); }
+    #panel { top: auto; left: 0; width: 100%; height: var(--panel-h); border-left: 0; border-top: 1px solid var(--line);
+      border-radius: 12px 12px 0 0; transform: translateY(100%); }
+    #panel.tall { height: 86vh; }
+    body.panel-open:has(#panel.tall) #map { height: 14vh; }
+    #panel .grip { display: block; width: 100%; height: 18px; background: none; border: 0; position: relative; }
+    #panel .grip::after { content: ""; position: absolute; left: 50%; top: 7px; width: 40px; height: 4px; margin-left: -20px; border-radius: 2px; background: var(--line); }
+  }
+  @media (prefers-reduced-motion: reduce) { #panel { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="map" aria-label="世界地圖"></canvas>
+<header id="hud" hidden>
+  <span id="hud-title"></span><span id="hud-lit"></span><span id="hud-xp"></span>
+  <button id="hud-issues" type="button" hidden></button><span id="hud-save" hidden>進度不會保存</span>
+</header>
+<nav id="actions" hidden>
+  <a id="btn-home" href="../app/index.html">首頁</a>
+  <button id="btn-go" type="button">帶我去 ！</button>
+  <button id="btn-book" type="button">書本地圖</button>
+  <button id="btn-open" type="button">開啟世界</button>
+</nav>
+<aside id="panel" aria-live="polite"></aside>
+<section id="welcome" hidden>
+  <h1>專家養成記</h1>
+  <p>到<a href="../app/index.html">首頁</a>匯入 AI 給的世界片段，或直接選擇世界檔（world.json）與片段。</p>
+  <p><button id="btn-welcome-open" type="button" class="primary">開啟世界檔或片段</button></p>
+  <p id="welcome-error" class="error" hidden></p>
+  <p class="muted">方向鍵或 WASD 移動，E 互動；手機可點地面移動、點物件互動。</p>
+</section>
+<input id="file" type="file" multiple accept=".json,.txt,.md,application/json,text/plain" hidden>
+<div id="toast" role="status" hidden></div>
+<script type="module" src="main.js"></script>
+</body>
+</html>

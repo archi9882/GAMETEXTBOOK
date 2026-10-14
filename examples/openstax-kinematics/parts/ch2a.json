@@ -1,0 +1,832 @@
+{
+ "framework": "expert-quest/1.1",
+ "kind": "part",
+ "world": "openstax-kinematics",
+ "part": "ch2a",
+ "skills": [
+  {
+   "id": "physics/displacement",
+   "name": "位移",
+   "en": "Displacement",
+   "aliases": [
+    "displacement"
+   ],
+   "num": "2.1",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "concept"
+   ],
+   "maxLevel": 3,
+   "meta": [
+    "變化量與累積量"
+   ],
+   "pre": [],
+   "def": "物體位置的改變量：$\\Delta x = x_f - x_0$。位移有正負，正負號表示方向；它只看起點與終點，和中間走了多遠無關。",
+   "analog": {
+    "text": "像存摺的「淨變化」：一天內存入又提出，餘額的淨變化可能是零，但交易的總額不是零。",
+    "origin": "supplement",
+    "license": "CC0-1.0",
+    "attribution": {
+     "name": "AI 補充"
+    }
+   },
+   "analogLimit": {
+    "text": "存摺金額沒有方向；位移有方向，在一維中用正負號表示。",
+    "origin": "supplement",
+    "license": "CC0-1.0",
+    "attribution": {
+     "name": "AI 補充"
+    }
+   },
+   "terms": [
+    "位移",
+    "路程"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document"
+  },
+  {
+   "id": "physics/vectors-and-scalars",
+   "name": "向量與純量",
+   "en": "Vectors and Scalars",
+   "aliases": [
+    "vector",
+    "scalar",
+    "座標系"
+   ],
+   "num": "2.2",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "fact",
+    "concept"
+   ],
+   "maxLevel": 2,
+   "meta": [
+    "方向與大小"
+   ],
+   "pre": [
+    "physics/displacement"
+   ],
+   "def": "向量同時有大小與方向，例如位移、速度、加速度；純量只有大小，例如距離、速率、時間。一維運動中先選定座標的正方向，向量的方向就用正負號表示。",
+   "terms": [
+    "向量",
+    "純量"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document"
+  },
+  {
+   "id": "physics/average-velocity",
+   "name": "平均速度與速率",
+   "en": "Average Velocity and Speed",
+   "aliases": [
+    "average velocity",
+    "average speed",
+    "平均速率",
+    "瞬時速度"
+   ],
+   "num": "2.3",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "concept",
+    "principle"
+   ],
+   "maxLevel": 3,
+   "meta": [
+    "變化率"
+   ],
+   "pre": [
+    "physics/displacement",
+    "physics/vectors-and-scalars"
+   ],
+   "def": "平均速度是位移除以經過的時間，$\\bar{v} = \\dfrac{\\Delta x}{\\Delta t}$，是向量；平均速率是總路程除以時間，是純量。瞬時速度是時間間隔趨近於零時的平均速度。",
+   "analog": {
+    "text": "平均速度像高速公路的區間測速：只看你從哪個收費站進、哪個出，以及花了多久。",
+    "origin": "supplement",
+    "license": "CC0-1.0",
+    "attribution": {
+     "name": "AI 補充"
+    }
+   },
+   "analogLimit": {
+    "text": "區間測速算的是路程除以時間（速率）；若中途折返，平均速度會比它小。",
+    "origin": "supplement",
+    "license": "CC0-1.0",
+    "attribution": {
+     "name": "AI 補充"
+    }
+   },
+   "terms": [
+    "平均速度",
+    "平均速率",
+    "瞬時速度"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document",
+   "expandable": true
+  },
+  {
+   "id": "physics/acceleration",
+   "name": "加速度",
+   "en": "Acceleration",
+   "aliases": [
+    "acceleration",
+    "減速度"
+   ],
+   "num": "2.4",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "concept",
+    "principle"
+   ],
+   "maxLevel": 3,
+   "meta": [
+    "變化率"
+   ],
+   "pre": [
+    "physics/average-velocity"
+   ],
+   "def": "速度的變化率，平均加速度 $\\bar{a} = \\dfrac{\\Delta v}{\\Delta t}$，單位 $\\text{m/s}^2$。加速度的正負表示方向，不代表變快或變慢：加速度與速度同號時速率增加，異號時速率減少。",
+   "terms": [
+    "加速度"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document",
+   "expandable": true
+  }
+ ],
+ "practices": [
+  {
+   "id": "dis-1",
+   "skill": "physics/displacement",
+   "level": 2,
+   "context": "subject",
+   "scene": "數線上的移動",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "一個物體從 $x_0 = {{x0}}$ m 移動到 $x_f = {{xf}}$ m。它的位移是多少？",
+    "vars": {
+     "x0": 3,
+     "xf": -5
+    },
+    "answer": "xf - x0",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "x0 - xf",
+      "why": "用起點減終點，正負號顛倒"
+     },
+     {
+      "expr": "xf + x0",
+      "why": "把兩個位置相加，而不是相減"
+     }
+    ],
+    "ex": "$\\Delta x = x_f - x_0 = -5 - 3 = -8$ m，負號表示朝負方向移動。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "dis-2",
+   "skill": "physics/displacement",
+   "level": 2,
+   "context": "commission",
+   "scene": "社區跑步教練",
+   "encounter": true,
+   "question": {
+    "type": "mc",
+    "q": "小芸沿直線跑道向東跑 400 m，再折返向西跑 150 m。她的位移與路程分別是？",
+    "opts": [
+     "位移 250 m 向東，路程 550 m",
+     "位移 550 m 向東，路程 250 m",
+     "位移 250 m 向東，路程 250 m",
+     "位移 550 m，路程 550 m"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "把位移與路程對調了",
+     "路程要把折返的距離也算進去",
+     "位移要考慮方向，折返的部分要扣掉"
+    ],
+    "ex": "位移只看起點到終點：$400 - 150 = 250$ m 向東；路程是走過的總長度：$400 + 150 = 550$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "dis-3",
+   "skill": "physics/displacement",
+   "level": 3,
+   "context": "subject",
+   "scene": "批改同學的計算",
+   "question": {
+    "type": "mc",
+    "q": "同學寫：「從 $x_0 = 6$ m 到 $x_f = 2$ m，位移 $= 6 - 2 = 4$ m。」錯在哪裡？",
+    "opts": [
+     "應該用終點減起點，位移是 $-4$ m",
+     "應該把兩個位置相加，位移是 8 m",
+     "沒有錯，位移是 4 m",
+     "位移一律取絕對值，所以寫 4 m 沒問題"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "位移是位置的差，不是和",
+     "順序顛倒，正負號錯了",
+     "位移有正負，負號表示朝負方向"
+    ],
+    "ex": "位移 $= x_f - x_0 = 2 - 6 = -4$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "dis-4",
+   "skill": "physics/displacement",
+   "level": 3,
+   "context": "commission",
+   "scene": "物流公司的送貨紀錄",
+   "question": {
+    "type": "numeric",
+    "q": "貨車從倉庫（$x = 0$）往正方向開 {{a}} km 到 A 店，再倒回 {{b}} km 到 B 店。報表把「位移」寫成 {{w}} km。正確的位移是多少？",
+    "vars": {
+     "a": 12,
+     "b": 5,
+     "w": 17
+    },
+    "answer": "a - b",
+    "unit": "km",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "a + b",
+      "why": "把路程當成位移"
+     },
+     {
+      "expr": "b - a",
+      "why": "方向弄反了"
+     }
+    ],
+    "ex": "B 店在 $x = 12 - 5 = 7$ km，位移是 $+7$ km；報表的 17 km 是路程。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "vec-1",
+   "skill": "physics/vectors-and-scalars",
+   "level": 1,
+   "context": "subject",
+   "scene": "分類練習",
+   "encounter": true,
+   "question": {
+    "type": "mc",
+    "q": "下列哪一個是純量？",
+    "opts": [
+     "速率",
+     "速度",
+     "位移",
+     "加速度"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "速度有方向，是向量",
+     "位移有方向，是向量",
+     "加速度有方向，是向量"
+    ],
+    "ex": "速率只有大小；速度、位移、加速度都有方向。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "vec-2",
+   "skill": "physics/vectors-and-scalars",
+   "level": 2,
+   "context": "subject",
+   "scene": "選定正方向",
+   "encounter": true,
+   "question": {
+    "type": "mc",
+    "q": "取向東為正方向。一輛車以 15 m/s 向西行駛，它的速度應寫成？",
+    "opts": [
+     "$-15$ m/s",
+     "$+15$ m/s",
+     "$15$ m/s 向東",
+     "$-15\\ \\text{m/s}^2$"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "向西與正方向相反，應為負",
+     "方向寫反了",
+     "單位錯了，速度的單位是 m/s"
+    ],
+    "ex": "向西與選定的正方向相反，所以速度為 $-15$ m/s。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "vec-3",
+   "skill": "physics/vectors-and-scalars",
+   "level": 2,
+   "context": "commission",
+   "scene": "無人機航線規劃",
+   "question": {
+    "type": "mc",
+    "q": "規劃員設定向上為正。無人機從離地 30 m 降到離地 12 m，它的位移是？",
+    "opts": [
+     "$-18$ m",
+     "$+18$ m",
+     "$+42$ m",
+     "$-42$ m"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "下降是朝負方向，位移應為負",
+     "把兩個高度相加了",
+     "把兩個高度相加了，只是加上負號"
+    ],
+    "ex": "$\\Delta y = 12 - 30 = -18$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "avg-1",
+   "skill": "physics/average-velocity",
+   "level": 2,
+   "context": "subject",
+   "scene": "平均速度計算",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "物體在 {{t}} s 內的位移是 {{dx}} m。平均速度是多少？",
+    "vars": {
+     "dx": -36,
+     "t": 8
+    },
+    "answer": "dx / t",
+    "unit": "m/s",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "t / dx",
+      "why": "分子分母顛倒"
+     },
+     {
+      "expr": "abs(dx) / t",
+      "why": "忽略了位移的方向"
+     }
+    ],
+    "ex": "$\\bar v = \\Delta x / \\Delta t = -36 / 8 = -4.5$ m/s。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "avg-2",
+   "skill": "physics/average-velocity",
+   "level": 2,
+   "context": "commission",
+   "scene": "操場的路跑課",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "跑者繞操場跑了 {{n}} 圈（每圈 {{L}} m）回到出發點，共花 {{t}} s。她的平均速率是多少？",
+    "vars": {
+     "n": 3,
+     "L": 400,
+     "t": 600
+    },
+    "answer": "n * L / t",
+    "unit": "m/s",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "0 * t",
+      "why": "算成平均速度：回到原點時位移為零，但題目問的是速率"
+     },
+     {
+      "expr": "L / t",
+      "why": "只算了一圈的路程"
+     }
+    ],
+    "ex": "平均速率 = 總路程 / 時間 = $1200 / 600 = 2$ m/s；平均速度則是 0。",
+    "as": "mc"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "avg-3",
+   "skill": "physics/average-velocity",
+   "level": 3,
+   "context": "subject",
+   "scene": "破解迷思",
+   "question": {
+    "type": "mc",
+    "q": "同學說：「平均速度是 0，所以這段時間內物體一直沒有動。」這句話錯在哪裡？",
+    "opts": [
+     "平均速度只看位移；物體可能走了一段又回到原處",
+     "沒有錯，平均速度為 0 表示速率一直是 0",
+     "平均速度為 0 時路程也一定是 0",
+     "應該說平均加速度為 0 才對"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "平均速度為 0 只代表起點與終點相同",
+     "路程是走過的總長度，回到原處時不為零",
+     "加速度與是否移動無關"
+    ],
+    "ex": "繞一圈回到原點，平均速度為 0，但平均速率不為 0。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "avg-4",
+   "skill": "physics/average-velocity",
+   "level": 3,
+   "context": "commission",
+   "scene": "公車準點率報告",
+   "question": {
+    "type": "numeric",
+    "q": "公車去程 {{d}} km 花 {{t1}} h，循同一路線回程花 {{t2}} h。報告把來回的平均速率算成兩段速率的平均。正確的來回平均速率是多少？",
+    "vars": {
+     "d": 12,
+     "t1": 0.4,
+     "t2": 0.6
+    },
+    "answer": "2 * d / (t1 + t2)",
+    "unit": "km/h",
+    "sig": 3,
+    "mistakes": [
+     {
+      "expr": "(d / t1 + d / t2) / 2",
+      "why": "直接平均兩段的速率；兩段花的時間不同，不能直接平均"
+     },
+     {
+      "expr": "d / (t1 + t2)",
+      "why": "只算了單程的距離"
+     }
+    ],
+    "ex": "總路程 $24$ km，總時間 $1.0$ h，平均速率 $24$ km/h。慢的那段花比較久，所以比兩段速率的平均 25 km/h 低。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "acc-1",
+   "skill": "physics/acceleration",
+   "level": 2,
+   "context": "subject",
+   "scene": "平均加速度計算",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "速度在 {{t}} s 內由 {{v0}} m/s 變成 {{v}} m/s。平均加速度是多少？",
+    "vars": {
+     "v0": 18,
+     "v": 6,
+     "t": 4
+    },
+    "answer": "(v - v0) / t",
+    "unit": "m/s^2",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "(v0 - v) / t",
+      "why": "用初速減末速，正負號顛倒"
+     },
+     {
+      "expr": "v / t",
+      "why": "只用了末速度"
+     }
+    ],
+    "ex": "$\\bar a = (6 - 18)/4 = -3\\ \\text{m/s}^2$，負號表示加速度朝負方向。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "acc-2",
+   "skill": "physics/acceleration",
+   "level": 2,
+   "context": "commission",
+   "scene": "電動機車試乘",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "試乘員從靜止加速到 {{v}} km/h 花了 {{t}} s。平均加速度是多少？（答案用 m/s²）",
+    "vars": {
+     "v": 54,
+     "t": 6
+    },
+    "answer": "v / 3.6 / t",
+    "unit": "m/s^2",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "v / t",
+      "why": "沒有把 km/h 換成 m/s"
+     },
+     {
+      "expr": "v * 3.6 / t",
+      "why": "換算方向錯了：km/h 換成 m/s 要除以 3.6"
+     }
+    ],
+    "ex": "$54$ km/h $= 15$ m/s，$\\bar a = 15 / 6 = 2.5\\ \\text{m/s}^2$。",
+    "as": "mc"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "acc-3",
+   "skill": "physics/acceleration",
+   "level": 3,
+   "context": "subject",
+   "scene": "破解迷思",
+   "question": {
+    "type": "mc",
+    "q": "小明說：「加速度是負的，所以車子一定在減速。」什麼情況下這句話是錯的？",
+    "opts": [
+     "車子朝負方向行駛時，負的加速度會讓它越來越快",
+     "從來不會錯，負加速度一定是減速",
+     "只有在加速度為零時才會錯",
+     "只有在車子靜止時才會錯"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "速度也是負的時兩者同號，速率增加",
+     "加速度為零時速度不變，與這句話無關",
+     "靜止時談不上減速，這不是它錯的原因"
+    ],
+    "ex": "速率變大或變小，要看加速度與速度是否同號，不是只看加速度的正負。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "acc-4",
+   "skill": "physics/acceleration",
+   "level": 3,
+   "context": "commission",
+   "scene": "球隊體能測試",
+   "question": {
+    "type": "mc",
+    "q": "教練記錄：折返跑時，速度在 0.5 s 內由 $+8$ m/s 變成 $-2$ m/s。助理算出加速度 $= (8 - 2)/0.5 = 12\\ \\text{m/s}^2$。正確的平均加速度是？",
+    "opts": [
+     "$-20\\ \\text{m/s}^2$",
+     "$12\\ \\text{m/s}^2$",
+     "$-12\\ \\text{m/s}^2$",
+     "$20\\ \\text{m/s}^2$"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "忽略了 $-2$ 的負號，順序也顛倒",
+     "忽略了末速度的負號",
+     "用初速減末速，正負號顛倒"
+    ],
+    "ex": "$\\bar a = (v - v_0)/\\Delta t = (-2 - 8)/0.5 = -20\\ \\text{m/s}^2$。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  }
+ ],
+ "glossary": [
+  {
+   "term": "位移",
+   "en": "displacement",
+   "def": "位置的改變量，終點位置減起點位置；有方向。",
+   "skill": "physics/displacement",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "路程",
+   "en": "distance traveled",
+   "def": "實際走過的路徑總長度；沒有方向，不會是負的。",
+   "skill": "physics/displacement",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.1",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "向量",
+   "en": "vector",
+   "def": "同時有大小與方向的量。",
+   "skill": "physics/vectors-and-scalars",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "純量",
+   "en": "scalar",
+   "def": "只有大小、沒有方向的量。",
+   "skill": "physics/vectors-and-scalars",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.2",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "平均速度",
+   "en": "average velocity",
+   "def": "位移除以經過的時間。",
+   "skill": "physics/average-velocity",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "平均速率",
+   "en": "average speed",
+   "def": "路程除以經過的時間。",
+   "skill": "physics/average-velocity",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "瞬時速度",
+   "en": "instantaneous velocity",
+   "def": "某一瞬間的速度，即時間間隔趨近於零時的平均速度。",
+   "skill": "physics/average-velocity",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.3",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "加速度",
+   "en": "acceleration",
+   "def": "速度的變化率。",
+   "skill": "physics/acceleration",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.4",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  }
+ ]
+}

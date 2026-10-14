@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地圖美術 v5</title>
+<style>
+  body { margin: 0; padding: 24px 16px 64px; background: #f4f3ef; color: #1d1d1b; font: 15px/1.65 system-ui, "Noto Sans TC", sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; }
+  h2 { margin: 0 0 4px; } h3 { margin: 24px 0 8px; }
+  .subtitle { color: #66655f; margin: 0 0 16px; }
+  .frame { position: relative; border: 4px solid #2b2b2b; border-radius: 6px; overflow: hidden; background: #000; line-height: 0; }
+  canvas { width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+  .tag { position: absolute; transform: translate(-50%, -50%); background: rgba(40, 28, 16, .85); color: #fff3d6; font-size: 12px; line-height: 1.4; padding: 2px 8px; border: 2px solid #c99a52; border-radius: 4px; white-space: nowrap; pointer-events: none; }
+  .note { color: #66655f; font-size: 13px; margin-top: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h2>地圖美術：像素圖塊風格</h2>
+  <p class="subtitle">全部由程式即時繪製（16×16 像素圖塊、固定配色），不使用任何既有遊戲的圖像。地形依世界 ID 決定性產生。</p>
+
+  <h3>1. 遊玩畫面（近景，鏡頭跟著角色）</h3>
+  <div class="frame" id="closeFrame"><canvas id="close"></canvas></div>
+  <p class="note">實際遊玩時的樣子：約 15×10 格，放大 3 倍。第 1 章城鎮：房子、主街上的街燈、委託人、道館在最深處。</p>
+
+  <h3>2. 地區全景（第 1–3 章）</h3>
+  <div class="frame" id="fullFrame"><canvas id="full"></canvas></div>
+  <p class="note">左：第 1 章城鎮 → 道路與草叢 → 中：第 2 章城鎮 → 木橋過湖 → 岩壁階梯上到高台 → 右上：第 3 章城鎮（中階，地面顏色不同）。</p>
+</main>
+
+<script>
+// ---------- deterministic random (seeded by world id) ----------
+function rng(seedStr) {
+  let h = 2166136261;
+  for (const c of seedStr) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; };
+}
+
+// ---------- palette ----------
+const C = {
+  grass: "#8fd27f", grass2: "#82c673", grassDot: "#a6e08f",
+  meadow: "#b8e3a2", meadowDot: "#c9ecb4",
+  sand: "#ead9a0", sandEdge: "#d2bd7e", sandDot: "#dccb8d",
+  pave: "#e6dfcc", paveLine: "#d3cab2",
+  plateau: "#c9d98a", plateauDot: "#b7c977",
+  tall: "#4f9e4c", tallDark: "#3c8139", tallLight: "#74c062",
+  treeDark: "#2d6e35", treeMid: "#43943f", treeLight: "#69bb55", treeHi: "#93d671", trunk: "#6b4a2b",
+  water: "#5aa6e8", waterDeep: "#4a90d6", waterHi: "#a9d6f7", foam: "#e9f6ff",
+  cliffTop: "#c89b68", cliffFace: "#a06d45", cliffDark: "#7a5032", cliffLine: "#5f3c25",
+  plank: "#cf9f57", plankDark: "#91672f",
+  wall: "#f3e8d2", wallShade: "#d9cbb0", roofR: "#d4574a", roofRDark: "#a83e33", roofB: "#4d7fd1", roofBDark: "#365fa3",
+  roofP: "#8a63c9", roofPDark: "#674397", door: "#6b4a2b", win: "#a9dcf5", winFrame: "#5d7f93",
+  post: "#4a4a4a", bulb: "#fff4b0", glow: "rgba(255, 228, 120, 0.35)", bulbOff: "#9a9a9a",
+};
+
+// ---------- tile painters (16x16) ----------
+const T = 16;
+function px(g, x, y, w, h, c) { g.fillStyle = c; g.fillRect(x, y, w, h); }
+
+function paintGround(g, x, y, base, dot, r) {
+  px(g, x, y, T, T, base);
+  for (let i = 0; i < 3; i++) if (r() < .6) px(g, x + Math.floor(r() * 14) + 1, y + Math.floor(r() * 14) + 1, 1, 1, dot);
+}
+function paintSand(g, x, y, r, n) {
+  px(g, x, y, T, T, C.sand);
+  for (let i = 0; i < 2; i++) px(g, x + Math.floor(r() * 15), y + Math.floor(r() * 15), 2, 1, C.sandDot);
+  // darker rim where sand meets grass
+  if (!n.up) px(g, x, y, T, 1, C.sandEdge);
+  if (!n.down) px(g, x, y + 15, T, 1, C.sandEdge);
+  if (!n.left) px(g, x, y, 1, T, C.sandEdge);
+  if (!n.right) px(g, x + 15, y, 1, T, C.sandEdge);
+}
+function paintPave(g, x, y) {
+  px(g, x, y, T, T, C.pave);
+  px(g, x, y + 7, T, 1, C.paveLine); px(g, x + 7, y, 1, 7, C.paveLine); px(g, x + 3, y + 8, 1, 8, C.paveLine); px(g, x + 11, y + 8, 1, 8, C.paveLine);
+}
+function paintTall(g, x, y) {
+  px(g, x, y, T, T, C.tall);
+  for (let row = 0; row < 4; row++) for (let col = 0; col < 4; col++) {
+    const bx = x + col * 4 + (row % 2) * 2, by = y + row * 4;
+    px(g, bx, by + 1, 1, 3, C.tallDark); px(g, bx + 1, by, 1, 3, C.tallLight); px(g, bx + 2, by + 1, 1, 3, C.tallDark);
+  }
+}
+function paintTree(g, x, y) {
+  // round canopy with light from the upper left, trunk peeking out below
+  px(g, x + 6, y + 13, 4, 3, C.trunk);
+  const rows = [[4, 8], [2, 12], [1, 14], [1, 14], [0, 16], [0, 16], [0, 16], [0, 16], [1, 14], [1, 14], [2, 12], [4, 8]];
+  rows.forEach(([o, w], i) => px(g, x + o, y + i, w, 1, C.treeMid));
+  rows.forEach(([o, w], i) => { if (i > 5) px(g, x + o + w - 5, y + i, 5, 1, C.treeDark); });
+  px(g, x + 3, y + 2, 5, 2, C.treeLight); px(g, x + 2, y + 4, 4, 2, C.treeLight); px(g, x + 4, y + 3, 2, 1, C.treeHi);
+  px(g, x + 9, y + 6, 3, 2, C.treeLight); px(g, x + 5, y + 8, 3, 2, C.treeLight);
+  px(g, x + 1, y + 11, 14, 1, C.treeDark);
+}
+function paintWater(g, x, y, n, t) {
+  px(g, x, y, T, T, C.water);
+  px(g, x, y + 8, T, 8, C.waterDeep);
+  // moving highlight streaks
+  const s = (t + x + y) % 16;
+  px(g, x + (s % 12), y + 4, 4, 1, C.waterHi); px(g, x + ((s + 7) % 12), y + 11, 3, 1, C.waterHi);
+  // shoreline foam against land
+  if (!n.up) { px(g, x, y, T, 2, C.foam); px(g, x, y + 2, T, 1, C.waterHi); }
+  if (!n.left) px(g, x, y, 2, T, C.foam);
+  if (!n.right) px(g, x + 14, y, 2, T, C.foam);
+  if (!n.down) px(g, x, y + 14, T, 2, C.foam);
+}
+function paintCliff(g, x, y, n) {
+  // layered rock face; the top row of a cliff band gets a grassy lip
+  px(g, x, y, T, T, C.cliffFace);
+  for (let k = 0; k < 4; k++) { px(g, x, y + k * 4 + 3, T, 1, C.cliffDark); px(g, x + ((k * 5) % 13), y + k * 4 + 1, 3, 1, C.cliffTop); }
+  if (!n.up) { px(g, x, y, T, 3, C.plateau); px(g, x, y + 3, T, 1, C.cliffLine); }
+  if (!n.left) px(g, x, y, 1, T, C.cliffLine);
+  if (!n.right) px(g, x + 15, y, 1, T, C.cliffLine);
+}
+function paintStairs(g, x, y) {
+  px(g, x, y, T, T, C.cliffTop);
+  for (let k = 0; k < 4; k++) { px(g, x + 1, y + k * 4, 14, 3, C.sand); px(g, x + 1, y + k * 4 + 3, 14, 1, C.cliffDark); }
+}
+function paintBridge(g, x, y, vertical) {
+  px(g, x, y, T, T, C.plank);
+  for (let k = 0; k < 4; k++) vertical ? px(g, x, y + k * 4 + 3, T, 1, C.plankDark) : px(g, x + k * 4 + 3, y, 1, T, C.plankDark);
+  vertical ? (px(g, x, y, 1, T, C.plankDark), px(g, x + 15, y, 1, T, C.plankDark)) : (px(g, x, y, T, 1, C.plankDark), px(g, x, y + 15, T, 1, C.plankDark));
+}
+function paintFlower(g, x, y, r) {
+  const c = r() < .5 ? "#f6f0f0" : "#f4d65b";
+  px(g, x + 4, y + 5, 2, 2, c); px(g, x + 10, y + 9, 2, 2, c); px(g, x + 6, y + 11, 2, 2, "#e86f7d");
+}
+
+// ---------- objects (drawn on top, multi-tile) ----------
+function house(g, x, y, roof, roofDark) {
+  // 4 x 3 tiles: roof two rows, wall one row
+  const W = 4 * T;
+  px(g, x + 2, y + 2, W - 4, 20, roof);
+  for (let k = 0; k < 5; k++) px(g, x + 2, y + 4 + k * 4, W - 4, 1, roofDark);
+  px(g, x, y + 20, W, 3, roofDark);
+  px(g, x + 3, y + 23, W - 6, 23, C.wall); px(g, x + 3, y + 42, W - 6, 4, C.wallShade);
+  px(g, x + 26, y + 30, 12, 16, C.door); px(g, x + 36, y + 37, 1, 2, "#e8c66a");
+  for (const wx of [8, 44]) { px(g, x + wx, y + 28, 12, 9, C.winFrame); px(g, x + wx + 1, y + 29, 10, 7, C.win); px(g, x + wx + 1, y + 29, 4, 2, "#e9f8ff"); }
+}
+function gym(g, x, y) {
+  // 6 x 4 tiles with a banner
+  const W = 6 * T;
+  px(g, x + 2, y + 4, W - 4, 24, C.roofP);
+  for (let k = 0; k < 6; k++) px(g, x + 2, y + 6 + k * 4, W - 4, 1, C.roofPDark);
+  px(g, x, y + 26, W, 4, C.roofPDark);
+  px(g, x + 3, y + 30, W - 6, 32, C.wall); px(g, x + 3, y + 58, W - 6, 4, C.wallShade);
+  px(g, x + 38, y + 40, 20, 22, C.door);
+  px(g, x + 30, y + 31, 36, 8, "#f0c94c"); px(g, x + 31, y + 32, 34, 6, "#fbe48a");
+  for (const wx of [10, 72]) { px(g, x + wx, y + 42, 12, 10, C.winFrame); px(g, x + wx + 1, y + 43, 10, 8, C.win); }
+}
+function lamp(g, x, y, lit, t) {
+  if (lit) { g.fillStyle = C.glow; g.beginPath(); g.arc(x + 8, y - 2, 9 + Math.sin(t / 8) * 1, 0, 7); g.fill(); }
+  px(g, x + 7, y, 2, 15, C.post); px(g, x + 5, y + 14, 6, 2, C.post);
+  px(g, x + 4, y - 4, 8, 4, C.post); px(g, x + 5, y - 3, 6, 2, lit ? C.bulb : C.bulbOff);
+}
+function sign(g, x, y) {
+  px(g, x + 7, y + 8, 2, 7, C.trunk); px(g, x + 2, y + 2, 12, 7, C.plankDark); px(g, x + 3, y + 3, 10, 5, C.plank);
+}
+function person(g, x, y, shirt, hair) {
+  // 16x16 sprite facing down
+  px(g, x + 4, y + 1, 8, 5, hair); px(g, x + 5, y + 4, 6, 4, "#f6d2ad"); px(g, x + 6, y + 6, 1, 1, "#333"); px(g, x + 9, y + 6, 1, 1, "#333");
+  px(g, x + 4, y + 8, 8, 5, shirt); px(g, x + 3, y + 9, 1, 3, "#f6d2ad"); px(g, x + 12, y + 9, 1, 3, "#f6d2ad");
+  px(g, x + 5, y + 13, 2, 3, "#3b3f58"); px(g, x + 9, y + 13, 2, 3, "#3b3f58");
+}
+function bubble(g, x, y) {
+  px(g, x + 4, y - 12, 8, 10, "#ffffff"); px(g, x + 5, y - 13, 6, 1, "#ffffff"); px(g, x + 7, y - 2, 2, 2, "#ffffff");
+  px(g, x + 7, y - 11, 2, 5, "#e2402f"); px(g, x + 7, y - 5, 2, 2, "#e2402f");
+}
+
+// ---------- region generation ----------
+const MW = 64, MH = 36;
+function buildRegion(seed) {
+  const r = rng(seed);
+  const m = Array.from({ length: MH }, () => Array(MW).fill("grass"));
+  const set = (x, y, k) => { if (x >= 0 && y >= 0 && x < MW && y < MH) m[y][x] = k; };
+  const rect = (x0, y0, x1, y1, k) => { for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) set(x, y, k); };
+
+  // forest border and random groves
+  for (let y = 0; y < MH; y++) for (let x = 0; x < MW; x++) {
+    const edge = Math.min(x, y, MW - 1 - x, MH - 1 - y);
+    if (edge < 2 || (edge < 4 && r() < .55)) m[y][x] = "tree";
+  }
+  for (let k = 0; k < 14; k++) {
+    const cx = 4 + Math.floor(r() * (MW - 8)), cy = 4 + Math.floor(r() * (MH - 8)), rad = 1 + Math.floor(r() * 3);
+    for (let y = cy - rad; y <= cy + rad; y++) for (let x = cx - rad; x <= cx + rad; x++) if (Math.hypot(x - cx, y - cy) <= rad + .3) set(x, y, "tree");
+  }
+
+  // town 1 (chapter 1) and town 2 (chapter 2) on the lowland
+  rect(4, 16, 19, 28, "meadow"); rect(5, 22, 18, 23, "pave");
+  rect(28, 16, 43, 28, "meadow"); rect(29, 22, 42, 23, "pave");
+  // route 1 between them, with tall grass on both sides
+  rect(19, 22, 28, 23, "sand"); rect(21, 18, 26, 21, "tall"); rect(21, 24, 26, 27, "tall");
+  // lake south-east with a bridge, then cliff band up to the plateau
+  rect(44, 22, 58, 31, "water"); rect(46, 32, 56, 32, "water");
+  rect(43, 22, 50, 23, "bridgeH");
+  rect(51, 22, 54, 23, "sand");
+  rect(44, 13, 61, 15, "cliff"); rect(52, 13, 53, 15, "stairs"); rect(52, 16, 53, 21, "sand");
+  // plateau (tier 2) with town 3
+  rect(44, 3, 61, 12, "plateau"); rect(46, 7, 59, 8, "pave");
+  // ponds and flowers for exploration
+  rect(8, 30, 11, 32, "water"); rect(33, 5, 36, 7, "water"); rect(14, 6, 17, 8, "tall");
+  for (let k = 0; k < 40; k++) { const x = Math.floor(r() * MW), y = Math.floor(r() * MH); if (m[y][x] === "grass" || m[y][x] === "meadow") m[y][x] = m[y][x] + "+flower"; }
+  // keep town interiors clear of trees
+  for (const [x0, y0, x1, y1] of [[4, 16, 19, 28], [28, 16, 43, 28], [44, 3, 61, 12]]) for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) if (m[y][x] === "tree") m[y][x] = "meadow";
+
+  const objects = [
+    // town 1: houses, lamps along the main street in prerequisite order, gym at the far end
+    { k: "house", x: 5, y: 17, roof: "R" }, { k: "house", x: 10, y: 17, roof: "B" },
+    { k: "gym", x: 13, y: 16 },
+    { k: "lamp", x: 6, y: 21, lit: true }, { k: "lamp", x: 8, y: 21, lit: true }, { k: "lamp", x: 10, y: 21, lit: true },
+    { k: "lamp", x: 12, y: 21, lit: false }, { k: "lamp", x: 14, y: 21, lit: false }, { k: "lamp", x: 16, y: 21, lit: false },
+    { k: "sign", x: 7, y: 24 }, { k: "lamp", x: 11, y: 25, lit: false }, { k: "lamp", x: 11, y: 27, lit: false },
+    { k: "npc", x: 13, y: 24, shirt: "#3b6fd1", hair: "#5a3a22", quest: true },
+    { k: "npc", x: 6, y: 26, shirt: "#d1883b", hair: "#222", quest: false },
+    { k: "hero", x: 11, y: 22 },
+    // town 2
+    { k: "house", x: 29, y: 17, roof: "B" }, { k: "house", x: 34, y: 25, roof: "R" }, { k: "gym", x: 37, y: 16 },
+    ...[30, 32, 34, 36, 38, 40].map((x) => ({ k: "lamp", x, y: 21, lit: false })),
+    { k: "npc", x: 33, y: 24, shirt: "#3bb08f", hair: "#c2a14d", quest: true },
+    // town 3 on the plateau
+    { k: "house", x: 46, y: 3, roof: "R" }, { k: "gym", x: 55, y: 2 },
+    ...[47, 49, 51, 53].map((x) => ({ k: "lamp", x, y: 6, lit: false })),
+  ];
+  // houses and gyms sit on paved lots
+  return { m, objects, r };
+}
+
+// ---------- rendering ----------
+function neighbors(m, x, y, kinds) {
+  const is = (xx, yy) => yy >= 0 && yy < MH && xx >= 0 && xx < MW && kinds.includes(m[yy][xx].split("+")[0]);
+  return { up: is(x, y - 1), down: is(x, y + 1), left: is(x - 1, y), right: is(x + 1, y) };
+}
+
+function drawRegion(g, region, t, view) {
+  const { m, objects } = region;
+  const r = rng("ground");
+  const [vx, vy, vw, vh] = view;
+  for (let y = vy; y < vy + vh; y++) for (let x = vx; x < vx + vw; x++) {
+    const [kind, extra] = m[y][x].split("+");
+    const X = (x - vx) * T, Y = (y - vy) * T;
+    switch (kind) {
+      case "grass": paintGround(g, X, Y, (x + y) % 2 ? C.grass : C.grass2, C.grassDot, r); break;
+      case "meadow": paintGround(g, X, Y, C.meadow, C.meadowDot, r); break;
+      case "plateau": paintGround(g, X, Y, C.plateau, C.plateauDot, r); break;
+      case "pave": paintPave(g, X, Y); break;
+      case "sand": paintSand(g, X, Y, r, neighbors(m, x, y, ["sand", "pave", "bridgeH", "stairs"])); break;
+      case "tall": paintTall(g, X, Y); break;
+      case "tree": paintGround(g, X, Y, C.grass2, C.grassDot, r); paintTree(g, X, Y); break;
+      case "water": paintWater(g, X, Y, neighbors(m, x, y, ["water", "bridgeH"]), t); break;
+      case "cliff": paintCliff(g, X, Y, neighbors(m, x, y, ["cliff", "stairs"])); break;
+      case "stairs": paintStairs(g, X, Y); break;
+      case "bridgeH": paintWater(g, X, Y, { up: true, down: true, left: true, right: true }, t); paintBridge(g, X, Y + 1, false); break;
+    }
+    if (extra === "flower") paintFlower(g, X, Y, r);
+  }
+  // objects sorted top-to-bottom so lower ones overlap upper ones
+  for (const o of [...objects].sort((a, b) => a.y - b.y)) {
+    const X = (o.x - vx) * T, Y = (o.y - vy) * T;
+    if (X < -6 * T || Y < -6 * T || X > vw * T || Y > vh * T) continue;
+    if (o.k === "house") house(g, X, Y, o.roof === "R" ? C.roofR : C.roofB, o.roof === "R" ? C.roofRDark : C.roofBDark);
+    if (o.k === "gym") gym(g, X, Y);
+    if (o.k === "lamp") lamp(g, X, Y, o.lit, t);
+    if (o.k === "sign") sign(g, X, Y);
+    if (o.k === "npc") { person(g, X, Y, o.shirt, o.hair); if (o.quest) bubble(g, X, Y); }
+    if (o.k === "hero") person(g, X, Y, "#2f5fb8", "#d8402f");
+  }
+}
+
+function setup(canvasId, frameId, view, scale, labels) {
+  const cv = document.getElementById(canvasId), g = cv.getContext("2d");
+  cv.width = view[2] * T; cv.height = view[3] * T;
+  g.imageSmoothingEnabled = false;
+  const frame = document.getElementById(frameId);
+  for (const [text, x, y] of labels) {
+    const el = document.createElement("span");
+    el.className = "tag"; el.textContent = text;
+    el.style.left = ((x - view[0]) / view[2] * 100) + "%"; el.style.top = ((y - view[1]) / view[3] * 100) + "%";
+    frame.appendChild(el);
+  }
+  return (t) => drawRegion(g, region, t, view);
+}
+
+const region = buildRegion("demo-world");
+const drawClose = setup("close", "closeFrame", [3, 15, 18, 12], 3, [["第 1 章 基本概念", 9, 15.6]]);
+const drawFull = setup("full", "fullFrame", [0, 0, MW, MH], 1, [
+  ["第 1 章 基本概念（初階）", 11.5, 15.2], ["1 號道路（草叢）", 23.5, 17.2],
+  ["第 2 章 基本定律（初階）", 35.5, 15.2], ["岩壁階梯：往中階", 52.5, 12.4], ["第 3 章 分析方法（中階）", 52.5, 1.6],
+]);
+
+// gentle animation for water and lamp glow; respects reduced-motion
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let frameNo = 0;
+function tick() {
+  drawClose(frameNo); drawFull(frameNo);
+  frameNo++;
+  if (!still) setTimeout(() => requestAnimationFrame(tick), 180);
+}
+tick();
+</script>
+</body>
+</html>

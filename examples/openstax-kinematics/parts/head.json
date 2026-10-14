@@ -1,0 +1,64 @@
+{
+ "framework": "expert-quest/1.1",
+ "kind": "part",
+ "world": "openstax-kinematics",
+ "part": "head",
+ "title": "一維運動學（示範世界）",
+ "lang": "zh-TW",
+ "source": {
+  "type": "textbook",
+  "title": "College Physics 2e",
+  "authors": "Paul Peter Urone, Roger Hinrichs",
+  "edition": "2e",
+  "year": 2022,
+  "license": "CC-BY-4.0"
+ },
+ "license": {
+  "default": "CC0-1.0"
+ },
+ "player": {
+  "background": "高中一年級，學過一次函數與基本代數",
+  "goal": "能用運動學分析日常生活中的直線運動"
+ },
+ "theme": {
+  "metaphor": "city-streetlights"
+ },
+ "schools": [
+  {
+   "id": "physics/newtonian-mechanics",
+   "name": "牛頓力學",
+   "en": "Newtonian Mechanics",
+   "discipline": "physics",
+   "tiers": [
+    {
+     "tier": 1,
+     "name": "初階",
+     "label": "一維運動學",
+     "anchor": "高中",
+     "boss": "boss-tier1"
+    }
+   ],
+   "finalBoss": "boss-final"
+  }
+ ],
+ "clusters": [
+  {
+   "id": "ch2",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "name": "一維運動學",
+   "en": "Kinematics",
+   "skills": [
+    "physics/displacement",
+    "physics/vectors-and-scalars",
+    "physics/average-velocity",
+    "physics/acceleration",
+    "physics/constant-acceleration-equations",
+    "physics/kinematics-problem-solving",
+    "physics/free-fall",
+    "physics/motion-graphs"
+   ],
+   "boss": "boss-ch2"
+  }
+ ]
+}

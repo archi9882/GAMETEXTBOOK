@@ -1,0 +1,20 @@
+{
+  "name": "expert-quest",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Expert Quest: framework and reference game for turning science documents into learning worlds",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "validate": "node tools/validate.mjs",
+    "vendor:katex": "node tools/vendor-katex.mjs",
+    "vendor:smiles": "node tools/vendor-smiles.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "katex": "^0.16.47",
+    "smiles-drawer": "^2.4.1"
+  }
+}

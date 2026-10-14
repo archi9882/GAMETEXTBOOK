@@ -1,0 +1,204 @@
+{
+ "framework": "expert-quest/1.1",
+ "kind": "part",
+ "world": "openstax-kinematics",
+ "part": "final",
+ "complete": true,
+ "bosses": [
+  {
+   "id": "boss-final",
+   "kind": "final",
+   "name": "審核者的一天",
+   "npc": "出版社編輯",
+   "intro": "出版社請你審核一份運動學習題解答。找出錯誤並寫出正確答案。",
+   "skills": [
+    "physics/acceleration",
+    "physics/constant-acceleration-equations",
+    "physics/free-fall"
+   ],
+   "steps": [
+    {
+     "type": "mc",
+     "q": "解答寫：「車的加速度是 $-3\\ \\text{m/s}^2$，所以它在減速。」但題目中車速是 $-10$ m/s。你要怎麼批註？",
+     "opts": [
+      "錯：速度與加速度同號，車子的速率正在增加",
+      "正確，負加速度就是減速",
+      "錯：加速度不可能是負的",
+      "錯：加速度應寫成 $3$ m/s"
+     ],
+     "a": 0,
+     "why": [
+      null,
+      "要比較加速度與速度的正負號",
+      "加速度可以是負的，代表方向",
+      "單位錯了，而且正負號有意義"
+     ],
+     "ex": "兩者同號，速率增加。"
+    },
+    {
+     "type": "numeric",
+     "q": "下一題的解答寫：「從靜止以 {{a}} m/s² 加速 {{t}} s，位移 $= at^2$。」請算出正確的位移。",
+     "vars": {
+      "a": 2,
+      "t": 6
+     },
+     "answer": "a * t^2 / 2",
+     "unit": "m",
+     "sig": 2,
+     "mistakes": [
+      {
+       "expr": "a * t^2",
+       "why": "沿用了解答的錯誤公式"
+      }
+     ],
+     "ex": "$\\Delta x = \\tfrac{1}{2} a t^2 = 36$ m。"
+    },
+    {
+     "type": "mc",
+     "q": "另一題問自由落體在「第 3 秒內」（第 2 秒末到第 3 秒末）落下的距離，解答直接算了 $\\tfrac{1}{2} g \\times 3^2$。這是哪種錯誤？",
+     "opts": [
+      "把「第 3 秒內」當成「前 3 秒」；應為 $\\tfrac{1}{2} g (3^2 - 2^2)$",
+      "沒有錯",
+      "應該用 $g \\times 3$",
+      "應該用 $\\tfrac{1}{2} g (3 - 2)^2$"
+     ],
+     "a": 0,
+     "why": [
+      null,
+      "前 3 秒與第 3 秒內不同",
+      "那是第 3 秒末的速率，不是距離",
+      "第 2 秒末時速度已不為零，不能這樣算"
+     ],
+     "ex": "第 3 秒內的距離 = 前 3 秒的距離 − 前 2 秒的距離。"
+    },
+    {
+     "type": "numeric",
+     "q": "請算出第 3 秒內落下的正確距離。（$g = {{g}}$ m/s²）",
+     "vars": {
+      "g": 9.8
+     },
+     "answer": "g * (3^2 - 2^2) / 2",
+     "unit": "m",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "g * 3^2 / 2",
+       "why": "算成了前 3 秒的距離"
+      },
+      {
+       "expr": "g * (3 - 2)^2 / 2",
+       "why": "把第 2 秒末的速度當成零"
+      }
+     ],
+     "ex": "$\\tfrac{1}{2} \\times 9.8 \\times (9 - 4) = 24.5$ m。"
+    }
+   ],
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  }
+ ],
+ "achievements": [
+  {
+   "id": "a-eq",
+   "rank": "bronze",
+   "name": "等加速度入門",
+   "desc": "等加速度運動方程式升到 Lv2",
+   "when": {
+    "skill": "physics/constant-acceleration-equations",
+    "level": 2
+   }
+  },
+  {
+   "id": "a-gym",
+   "rank": "bronze",
+   "name": "路口設計師",
+   "desc": "通過十字路口的黃燈",
+   "when": {
+    "boss": "boss-ch2"
+   }
+  },
+  {
+   "id": "a-tier",
+   "rank": "silver",
+   "name": "運動學初階",
+   "desc": "通過運動學初階檢定",
+   "when": {
+    "boss": "boss-tier1"
+   }
+  },
+  {
+   "id": "a-final",
+   "rank": "gold",
+   "name": "運動學審核者",
+   "desc": "通過審核者的一天",
+   "when": {
+    "boss": "boss-final"
+   }
+  }
+ ],
+ "report": {
+  "stats": {
+   "schools": 1,
+   "skills": {
+    "tier1": 8
+   },
+   "practices": 35,
+   "encounters": 16,
+   "placement": 6,
+   "bosses": 3,
+   "glossary": 11,
+   "confidence": {
+    "document": 8
+   },
+   "origin": {
+    "document": 55,
+    "supplement": 8
+   }
+  },
+  "mapping": [
+   {
+    "document": "第 2 章 一維運動學",
+    "game": "技能群 ch2（初階），道館：十字路口的黃燈"
+   },
+   {
+    "document": "§2.1–2.8 各節",
+    "game": "8 個核心技能"
+   },
+   {
+    "document": "例題與習題",
+    "game": "練習關卡的素材；數值全部重新設定，情境改寫為台灣的日常場景"
+   },
+   {
+    "document": "圖 2.x 的位置–時間與速度–時間圖",
+    "game": "以 plot 圖資料重畫，數值重新設定"
+   }
+  ],
+  "gaps": [
+   "本示範世界只涵蓋原書第 2 章；向量運算與二維運動在第 3 章",
+   "判斷類（Lv4）關卡只有等加速度與自由落體兩個技能"
+  ],
+  "expandable": [
+   "physics/average-velocity",
+   "physics/acceleration",
+   "physics/kinematics-problem-solving",
+   "physics/motion-graphs"
+  ],
+  "possibleDuplicates": [],
+  "missingPrereqs": [],
+  "possibleBridges": [
+   {
+    "skill": "physics/motion-graphs",
+    "meta": "斜率與面積",
+    "note": "可連到微積分的導數與定積分"
+   }
+  ],
+  "newSchools": [],
+  "licenses": {
+   "CC-BY-4.0": 55,
+   "CC0-1.0": 8
+  }
+ }
+}

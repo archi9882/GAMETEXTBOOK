@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI API 跨網域測試</title>
+<style>
+  :root { --bg: #f7f7f5; --fg: #1d1d1b; --muted: #6b6b66; --line: #d9d9d4; --ok: #1f7a3a; --bad: #b3261e; --warn: #8a5a00; --card: #fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161615; --fg: #ececea; --muted: #9a9a94; --line: #34342f; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b04a; --card: #1f1f1d; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 system-ui, "Noto Sans TC", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.note { color: var(--muted); margin: 4px 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin: 16px 0; }
+  label { display: block; font-weight: 600; margin: 8px 0 4px; }
+  input, select { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg); font: inherit; }
+  button { padding: 8px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--fg); color: var(--bg); font: inherit; cursor: pointer; margin: 12px 8px 0 0; }
+  button.secondary { background: transparent; color: var(--fg); }
+  button:disabled { opacity: .5; cursor: default; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.status { white-space: nowrap; font-weight: 600; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); } .muted { color: var(--muted); }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>AI API 跨網域（CORS）測試</h1>
+  <p class="note">測試瀏覽器能否直接呼叫 AI 供應商的 API（CLAUDE.md 5.3）。金鑰只在這個分頁的記憶體中使用：不存入瀏覽器儲存、不顯示在結果中，關閉分頁即消失。</p>
+
+  <div class="card">
+    <label for="provider">供應商</label>
+    <select id="provider"><option value="anthropic">Anthropic（Claude）</option></select>
+
+    <label for="key">API 金鑰</label>
+    <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-...">
+
+    <label for="model">模型</label>
+    <input id="model" value="claude-opus-5-5" spellcheck="false">
+
+    <button id="run">執行全部測試</button>
+    <button id="copy" class="secondary" disabled>複製結果（Markdown）</button>
+    <p class="note">預估花費：6 個極短請求（其中 1 個附一頁 PDF），合計通常在數千 token 以內。</p>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>#</th><th>測試</th><th>結果</th><th>細節</th></tr></thead>
+      <tbody id="results"><tr><td colspan="4" class="muted">尚未執行</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <strong>結果摘要（可貼入 docs/test-log/）</strong>
+    <pre id="summary" class="muted">尚未執行</pre>
+  </div>
+</main>
+
+<script type="module">
+// Browser-side CORS probe for AI providers. Each test sends one real request and records
+// whether the browser could read the response (CORS allowed) and what came back.
+
+const API = "https://api.anthropic.com/v1/messages";
+const $ = (id) => document.getElementById(id);
+
+// Build a one-page PDF containing a known number, with correct xref offsets
+function tinyPdf(text) {
+  const content = `BT /F1 28 Tf 30 60 Td (${text}) Tj ET`;
+  const objs = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 360 144] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets = [];
+  objs.forEach((body, i) => {
+    offsets.push(pdf.length);
+    pdf += `${i + 1} 0 obj\n${body}\nendobj\n`;
+  });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`;
+  for (const o of offsets) pdf += `${String(o).padStart(10, "0")} 00000 n \n`;
+  pdf += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return btoa(pdf); // ASCII only, so btoa is safe
+}
+
+// Common request pieces; low effort keeps the test cheap
+const headers = (key, extra = {}) => ({
+  "content-type": "application/json",
+  "x-api-key": key,
+  "anthropic-version": "2023-06-01",
+  ...extra,
+});
+const BROWSER = { "anthropic-dangerous-direct-browser-access": "true" };
+const body = (model, content, extra = {}) => JSON.stringify({
+  model, max_tokens: 2048, output_config: { effort: "low" },
+  messages: [{ role: "user", content }], ...extra,
+});
+const textOf = (msg) => (msg.content ?? []).filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+
+// Send a request and classify the outcome without ever echoing the key
+async function probe(url, init) {
+  try {
+    const res = await fetch(url, init);
+    let data = null;
+    const raw = await res.text();
+    try { data = JSON.parse(raw); } catch { data = raw; }
+    return { reached: true, status: res.status, data };
+  } catch (e) {
+    // fetch rejects with TypeError when CORS blocks the response or the network fails
+    return { reached: false, error: `${e.name}: ${e.message}` };
+  }
+}
+
+const errMsg = (r) => r.reached ? `HTTP ${r.status}: ${r.data?.error?.type ?? ""} ${r.data?.error?.message ?? ""}`.trim() : r.error;
+
+const TESTS = [
+  {
+    name: "基本請求（含瀏覽器直連 header）",
+    expect: "成功",
+    async run(key, model) {
+      const r = await probe(API, { method: "POST", headers: headers(key, BROWSER), body: body(model, "Reply with the single word: pong") });
+      if (r.reached && r.status === 200) return { pass: true, detail: `回覆：${textOf(r.data)}；stop_reason=${r.data.stop_reason}；usage=${JSON.stringify(r.data.usage)}` };
+      return { pass: false, detail: errMsg(r) };
+    },
+  },
+  {
+    name: "基本請求（不含瀏覽器直連 header）",
+    expect: "被拒（確認此 header 是否必要）",
+    async run(key, model) {
+      const r = await probe(API, { method: "POST", headers: headers(key), body: body(model, "Reply with the single word: pong") });
+      if (!r.reached) return { pass: true, info: true, detail: `瀏覽器無法讀取回應：${r.error}` };
+      if (r.status === 200) return { pass: true, info: true, detail: "不需要此 header 也能成功" };
+      return { pass: true, info: true, detail: `可讀取錯誤回應：${errMsg(r)}` };
+    },
+  },
+  {
+    name: "錯誤金鑰時能否讀到錯誤內容",
+    expect: "讀到 HTTP 401（介面才能顯示原因）",
+    async run(_key, model) {
+      const r = await probe(API, { method: "POST", headers: headers("sk-ant-invalid-test-key", BROWSER), body: body(model, "hi") });
+      if (r.reached && r.status === 401) return { pass: true, detail: errMsg(r) };
+      return { pass: false, detail: errMsg(r) };
+    },
+  },
+  {
+    name: "串流回應（SSE）",
+    expect: "逐段收到事件",
+    async run(key, model) {
+      try {
+        const res = await fetch(API, { method: "POST", headers: headers(key, BROWSER), body: body(model, "Count from 1 to 5, separated by spaces.", { stream: true }) });
+        if (!res.ok) return { pass: false, detail: `HTTP ${res.status}: ${await res.text()}` };
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let chunks = 0, events = new Set(), buf = "";
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks++;
+          buf += dec.decode(value, { stream: true });
+          for (const m of buf.matchAll(/^event: (\S+)/gm)) events.add(m[1]);
+        }
+        const ok = events.has("message_start") && events.has("message_stop");
+        return { pass: ok, detail: `收到 ${chunks} 個片段；事件：${[...events].join(", ")}` };
+      } catch (e) {
+        return { pass: false, detail: `${e.name}: ${e.message}` };
+      }
+    },
+  },
+  {
+    name: "PDF 文件輸入（base64）",
+    expect: "讀出 PDF 中的數字 4217",
+    async run(key, model) {
+      const content = [
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: tinyPdf("Expert Quest 4217") } },
+        { type: "text", text: "What number appears in this document? Reply with the number only." },
+      ];
+      const r = await probe(API, { method: "POST", headers: headers(key, BROWSER), body: body(model, content) });
+      if (r.reached && r.status === 200) {
+        const t = textOf(r.data);
+        return { pass: t.includes("4217"), detail: `回覆：${t}；input_tokens=${r.data.usage?.input_tokens}` };
+      }
+      return { pass: false, detail: errMsg(r) };
+    },
+  },
+  {
+    name: "beta header 能否通過預檢（伺服器端備援）",
+    expect: "成功",
+    async run(key, model) {
+      const r = await probe(API, {
+        method: "POST",
+        headers: headers(key, { ...BROWSER, "anthropic-beta": "server-side-fallback-2026-07-01" }),
+        body: body(model, "Reply with the single word: pong", { fallbacks: "default" }),
+      });
+      if (r.reached && r.status === 200) return { pass: true, detail: `回覆：${textOf(r.data)}` };
+      return { pass: false, detail: errMsg(r) };
+    },
+  },
+];
+
+const rows = [];
+
+function render() {
+  $("results").innerHTML = rows.map((r, i) => {
+    const cls = r.state === "running" ? "muted" : r.info ? "warn" : r.pass ? "ok" : "bad";
+    const label = r.state === "running" ? "執行中…" : r.info ? "紀錄" : r.pass ? "通過" : "失敗";
+    return `<tr><td>${i + 1}</td><td>${r.name}<br><span class="muted">預期：${r.expect}</span></td>
+      <td class="status ${cls}">${label}</td><td>${escapeHtml(r.detail ?? "")}</td></tr>`;
+  }).join("");
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+function summary() {
+  const lines = [
+    `- 日期：${new Date().toISOString().slice(0, 10)}`,
+    `- 供應商：Anthropic；模型：${$("model").value}`,
+    `- 頁面來源（origin）：${location.origin}`,
+    `- 瀏覽器：${navigator.userAgent}`,
+    "",
+    "| # | 測試 | 結果 | 細節 |",
+    "|---|---|---|---|",
+    ...rows.map((r, i) => `| ${i + 1} | ${r.name} | ${r.info ? "紀錄" : r.pass ? "通過" : "失敗"} | ${String(r.detail ?? "").replace(/\|/g, "\\|")} |`),
+  ];
+  return lines.join("\n");
+}
+
+$("run").addEventListener("click", async () => {
+  const key = $("key").value.trim();
+  const model = $("model").value.trim();
+  if (!key) { alert("請先輸入 API 金鑰"); return; }
+  $("run").disabled = true;
+  $("copy").disabled = true;
+  rows.length = 0;
+  for (const t of TESTS) {
+    const row = { name: t.name, expect: t.expect, state: "running" };
+    rows.push(row);
+    render();
+    Object.assign(row, await t.run(key, model), { state: "done" });
+    // Defense in depth: make sure the key never appears in what we display or copy
+    row.detail = String(row.detail ?? "").split(key).join("[金鑰已隱藏]");
+    render();
+  }
+  $("summary").textContent = summary();
+  $("summary").classList.remove("muted");
+  $("run").disabled = false;
+  $("copy").disabled = false;
+});
+
+$("copy").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(summary());
+    $("copy").textContent = "已複製";
+    setTimeout(() => { $("copy").textContent = "複製結果（Markdown）"; }, 1500);
+  } catch {
+    alert("無法存取剪貼簿，請直接選取下方摘要文字複製。");
+  }
+});
+</script>
+</body>
+</html>

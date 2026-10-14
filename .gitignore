@@ -1,0 +1,17 @@
+# user books and anything derived that contains book text
+library/*
+!library/.gitkeep
+worlds/*
+!worlds/.gitkeep
+**/structure.json
+*.pdf
+# local secrets
+.env
+config.local.*
+__pycache__/
+engine/world.json
+node_modules/
+.superpowers/
+# third-party screenshots kept only as local design references
+docs/reference/
+_site/

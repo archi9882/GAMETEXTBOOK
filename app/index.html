@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>專家養成記</title>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#1f3a68">
+<link rel="icon" href="../app/icons/icon-192.png">
+<link rel="apple-touch-icon" href="../app/icons/apple-touch-icon.png">
+<script type="module" src="../app/pwa.js"></script>
+<link rel="stylesheet" href="../engine/vendor/katex/katex.min.css">
+<script defer src="../engine/vendor/katex/katex.min.js"></script>
+<script defer src="../engine/vendor/katex/contrib/mhchem.min.js"></script>
+<script defer src="../engine/vendor/katex/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg: #f7f6f2; --fg: #1d1d1b; --muted: #66655f; --line: #dad8d0; --card: #ffffff;
+    --accent: #2f5fb8; --ok: #1f7a3a; --bad: #b3261e; --warn: #8a5a00;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
+  }
+  :root[data-theme="dark"] { --bg: #1b1c1e; --fg: #ececea; --muted: #a2a19b; --line: #36373a; --card: #242528; --accent: #7aa2f0; --ok: #5cc27a; --bad: #ff8a80; --warn: #e0b050; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.6 system-ui, "Noto Sans TC", sans-serif; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 18px; margin: 0 auto 0 0; }
+  header a { color: inherit; text-decoration: none; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  button, .btn { font: inherit; cursor: pointer; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--fg); text-decoration: none; display: inline-block; }
+  .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin: 10px 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .muted { color: var(--muted); }
+  .error { color: var(--bad); }
+  .ok { color: var(--ok); }
+  .warn { color: var(--warn); }
+  textarea, input { width: 100%; font: 14px/1.5 ui-monospace, Consolas, monospace; padding: 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--fg); }
+  input { font-family: inherit; }
+  textarea { min-height: 160px; resize: vertical; }
+  .drop { outline: 2px dashed var(--accent); }
+  ul.issues { padding-left: 18px; margin: 6px 0; }
+  ul.issues code { color: var(--muted); font-size: 12px; word-break: break-all; }
+  pre.prompt { white-space: pre-wrap; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  .replaced { color: var(--muted); text-decoration: line-through; }
+  #status { min-height: 1.6em; }
+  label { display: block; margin: 10px 0 4px; }
+  .tag { display: inline-block; font-size: 12px; padding: 0 6px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); }
+  .rv-item { border-left: 3px solid var(--line); }
+  .rv-item.seen { border-left-color: var(--ok); }
+  .rv-item.flagged { border-left-color: var(--bad); }
+  .rv-answer { background: color-mix(in srgb, var(--ok) 8%, transparent); border-radius: 6px; padding: 6px 10px; margin: 8px 0; }
+  .rv-wrong { margin: 4px 0 0; padding-left: 4px; list-style: none; }
+  .rv-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+  .rv-controls label { display: inline-flex; gap: 4px; margin: 0; align-items: center; }
+  .rv-controls input[type=checkbox] { width: auto; }
+  details.rv-group > summary { cursor: pointer; font-weight: 600; margin: 14px 0 4px; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-weight: 600; }
+  .badge.ok { background: color-mix(in srgb, var(--ok) 15%, transparent); }
+  .badge.warn { background: color-mix(in srgb, var(--warn) 15%, transparent); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1><a href="#/">專家養成記</a></h1>
+  <a class="btn" href="#/join">加入班級世界</a>
+  <a class="btn" href="#/start">新增世界</a>
+  <a class="btn" href="#/import">匯入</a>
+  <a class="btn" href="#/backup">備份</a>
+  <a class="btn" href="#/about">關於</a>
+  <span id="volatile" class="warn" hidden>此瀏覽器無法保存資料，關閉頁面後會遺失</span>
+</header>
+<main id="view"></main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

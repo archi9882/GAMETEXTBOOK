@@ -1,0 +1,1446 @@
+{
+ "framework": "expert-quest/1.1",
+ "kind": "part",
+ "world": "openstax-kinematics",
+ "part": "ch2b",
+ "skills": [
+  {
+   "id": "physics/constant-acceleration-equations",
+   "name": "等加速度運動方程式",
+   "en": "Motion Equations for Constant Acceleration",
+   "aliases": [
+    "kinematic equations",
+    "運動學方程式",
+    "等加速度公式"
+   ],
+   "num": "2.5",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "principle",
+    "procedure"
+   ],
+   "maxLevel": 4,
+   "meta": [
+    "守恆與不變量"
+   ],
+   "pre": [
+    "physics/acceleration"
+   ],
+   "def": "加速度固定時：$v = v_0 + at$、$x = x_0 + v_0 t + \\tfrac{1}{2} a t^2$、$v^2 = v_0^2 + 2a(x - x_0)$、$\\bar{v} = \\tfrac{v_0 + v}{2}$。這些式子只在加速度固定時成立。",
+   "terms": [
+    "加速度"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document"
+  },
+  {
+   "id": "physics/kinematics-problem-solving",
+   "name": "運動學解題步驟",
+   "en": "Problem-Solving Basics",
+   "aliases": [
+    "problem solving",
+    "解題策略"
+   ],
+   "num": "2.6",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "procedure",
+    "judgment"
+   ],
+   "maxLevel": 3,
+   "meta": [
+    "模型與近似"
+   ],
+   "pre": [
+    "physics/constant-acceleration-equations"
+   ],
+   "def": "畫示意圖並選定正方向；列出已知量與未知量（含正負號）；選一條只含一個未知量的方程式；代入求解；最後檢查單位與答案是否合理。",
+   "terms": [],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document",
+   "expandable": true
+  },
+  {
+   "id": "physics/free-fall",
+   "name": "自由落體",
+   "en": "Falling Objects",
+   "aliases": [
+    "free fall",
+    "落體運動",
+    "上拋運動"
+   ],
+   "num": "2.7",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "principle"
+   ],
+   "maxLevel": 4,
+   "meta": [
+    "模型與近似"
+   ],
+   "pre": [
+    "physics/constant-acceleration-equations"
+   ],
+   "def": "只受重力、忽略空氣阻力時，物體的加速度固定為 $g \\approx 9.80\\ \\text{m/s}^2$，方向向下。取向上為正時 $a = -g$；上拋、下拋與自由落下都是等加速度運動。",
+   "story": {
+    "text": "伽利略用斜面實驗研究落體，推論在沒有空氣阻力時，所有物體以相同的加速度下落；比薩斜塔丟球的故事很可能是後人附會。",
+    "origin": "supplement",
+    "license": "CC0-1.0",
+    "attribution": {
+     "name": "AI 補充"
+    }
+   },
+   "terms": [
+    "自由落體",
+    "重力加速度"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document"
+  },
+  {
+   "id": "physics/motion-graphs",
+   "name": "運動的圖形分析",
+   "en": "Graphical Analysis of Motion",
+   "aliases": [
+    "motion graphs",
+    "x-t 圖",
+    "v-t 圖"
+   ],
+   "num": "2.8",
+   "schools": [
+    "physics/newtonian-mechanics"
+   ],
+   "tier": 1,
+   "cluster": "ch2",
+   "kind": "core",
+   "ktype": [
+    "concept",
+    "procedure"
+   ],
+   "maxLevel": 3,
+   "meta": [
+    "斜率與面積"
+   ],
+   "pre": [
+    "physics/average-velocity",
+    "physics/acceleration"
+   ],
+   "def": "位置–時間圖的斜率是速度；速度–時間圖的斜率是加速度，圖線下的面積是位移。圖線是曲線時，某一點切線的斜率是該瞬間的值。",
+   "figs": [
+    {
+     "type": "plot",
+     "x": {
+      "var": "t",
+      "min": 0,
+      "max": 6,
+      "label": "$t$",
+      "unit": "s"
+     },
+     "y": {
+      "label": "$x$",
+      "unit": "m"
+     },
+     "series": [
+      {
+       "expr": "1 + 0.5 * t^2",
+       "label": "等加速度：$x(t)$ 是拋物線"
+      },
+      {
+       "expr": "1 + 2 * t",
+       "label": "等速度：$x(t)$ 是直線"
+      }
+     ]
+    }
+   ],
+   "terms": [
+    "斜率"
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   },
+   "confidence": "document",
+   "expandable": true
+  }
+ ],
+ "practices": [
+  {
+   "id": "eq-1",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 2,
+   "context": "subject",
+   "scene": "末速度計算",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "物體初速 {{v0}} m/s，以 {{a}} m/s² 的等加速度運動 {{t}} s。末速度是多少？",
+    "vars": {
+     "v0": 4,
+     "a": 2.5,
+     "t": 6
+    },
+    "answer": "v0 + a * t",
+    "unit": "m/s",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "a * t",
+      "why": "忘了加上初速度"
+     },
+     {
+      "expr": "v0 + a * t^2 / 2",
+      "why": "用錯公式，那是位移的形式"
+     }
+    ],
+    "ex": "$v = v_0 + at = 4 + 2.5 \\times 6 = 19$ m/s。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "eq-2",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 2,
+   "context": "commission",
+   "scene": "機場跑道設計",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "噴射機從靜止以 {{a}} m/s² 等加速度滑行，速度達到 {{v}} m/s 才能起飛。跑道至少要多長？",
+    "vars": {
+     "a": 3,
+     "v": 60
+    },
+    "answer": "v^2 / (2 * a)",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "v^2 / a",
+      "why": "忘了除以 2"
+     },
+     {
+      "expr": "v / a",
+      "why": "算出的是時間，不是距離"
+     }
+    ],
+    "ex": "$v^2 = 2a\\Delta x$，$\\Delta x = 60^2/(2 \\times 3) = 600$ m。",
+    "as": "mc"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "eq-3",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 3,
+   "context": "subject",
+   "scene": "公式的適用條件",
+   "question": {
+    "type": "mc",
+    "q": "下列哪一種情況「不能」直接用 $x = x_0 + v_0 t + \\tfrac{1}{2} a t^2$ 計算？",
+    "opts": [
+     "汽車煞車時阻力隨速度改變，減速度越來越小",
+     "球沿光滑斜面等加速度滑下",
+     "汽車以固定加速度起步",
+     "忽略空氣阻力的上拋運動"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "斜面上的加速度固定，可以用",
+     "加速度固定，可以用",
+     "只受重力時加速度固定，可以用"
+    ],
+    "ex": "這組方程式只在加速度固定時成立。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "eq-4",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 3,
+   "context": "commission",
+   "scene": "駕訓班的煞車課",
+   "question": {
+    "type": "numeric",
+    "q": "車速 {{v0}} m/s 時開始煞車，減速度大小為 {{a}} m/s²。學員算出的煞車距離是 {{w}} m。正確的煞車距離是多少？",
+    "vars": {
+     "v0": 20,
+     "a": 5,
+     "w": 80
+    },
+    "answer": "v0^2 / (2 * a)",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "v0^2 / a",
+      "why": "忘了除以 2（學員的錯誤）"
+     },
+     {
+      "expr": "v0 / a",
+      "why": "算出的是煞車時間，不是距離"
+     }
+    ],
+    "ex": "取前進為正，$a = -5$，$0 = v_0^2 + 2a\\Delta x$，$\\Delta x = 400/10 = 40$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "eq-5",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 4,
+   "context": "subject",
+   "scene": "選擇最直接的方程式",
+   "question": {
+    "type": "method",
+    "q": "已知初速、末速與位移，要求加速度。你要用哪一條方程式？",
+    "methods": [
+     {
+      "name": "$v^2 = v_0^2 + 2a\\Delta x$",
+      "best": true
+     },
+     {
+      "name": "先用 $\\bar v = (v_0 + v)/2$ 求時間，再用 $v = v_0 + at$",
+      "why": "也算得出來，但多一步；不含時間的式子一步就到"
+     }
+    ],
+    "then": {
+     "type": "numeric",
+     "q": "$v_0 = {{v0}}$ m/s，$v = {{v}}$ m/s，$\\Delta x = {{dx}}$ m。加速度是多少？",
+     "vars": {
+      "v0": 5,
+      "v": 25,
+      "dx": 100
+     },
+     "answer": "(v^2 - v0^2) / (2 * dx)",
+     "unit": "m/s^2",
+     "sig": 2,
+     "mistakes": [
+      {
+       "expr": "(v - v0)^2 / (2 * dx)",
+       "why": "先相減再平方；應該是平方後再相減"
+      },
+      {
+       "expr": "(v^2 - v0^2) / dx",
+       "why": "忘了除以 2"
+      }
+     ],
+     "ex": "$a = (625 - 25)/200 = 3\\ \\text{m/s}^2$。"
+    }
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "eq-6",
+   "skill": "physics/constant-acceleration-equations",
+   "level": 4,
+   "context": "commission",
+   "scene": "遊樂園滑車工程師",
+   "question": {
+    "type": "mc",
+    "q": "滑車從靜止出發，前段以 $4\\ \\text{m/s}^2$ 加速 3 s，後段以 $2\\ \\text{m/s}^2$ 加速 2 s。同事用平均加速度 $3\\ \\text{m/s}^2$、總時間 5 s 代入 $x = \\tfrac{1}{2}at^2$ 算總距離。你的判斷？",
+    "opts": [
+     "不能這樣算；兩段加速度不同，要分段計算，後段的初速度是前段的末速度",
+     "可以，平均加速度能代替整段的加速度",
+     "可以，只要最後把答案除以 2",
+     "不能，運動學公式只適用於等速運動"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "等加速度公式要求加速度在整段時間內固定",
+     "沒有根據的修正",
+     "等加速度運動也能用運動學公式"
+    ],
+    "ex": "分段：前段 $18$ m、末速 $12$ m/s；後段 $12 \\times 2 + \\tfrac{1}{2} \\times 2 \\times 2^2 = 28$ m；共 $46$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.5",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ps-1",
+   "skill": "physics/kinematics-problem-solving",
+   "level": 2,
+   "context": "subject",
+   "scene": "解題流程",
+   "encounter": true,
+   "question": {
+    "type": "order",
+    "q": "把解一維運動學問題的步驟排好。",
+    "items": [
+     "畫示意圖，選定座標正方向",
+     "列出已知量與未知量，標上正負號",
+     "選一條只含一個未知量的方程式",
+     "代入數值求解",
+     "檢查單位與答案是否合理"
+    ],
+    "ex": "先建立座標與已知量，再選方程式；最後一定要檢查合理性。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ps-2",
+   "skill": "physics/kinematics-problem-solving",
+   "level": 2,
+   "context": "commission",
+   "scene": "物理社學長的筆記",
+   "encounter": true,
+   "question": {
+    "type": "mc",
+    "q": "題目：「車從靜止以 $2\\ \\text{m/s}^2$ 加速 5 s，走了多遠？」已知 $v_0$、$a$、$t$，未知量是 $\\Delta x$。最適合的方程式是？",
+    "opts": [
+     "$x = x_0 + v_0 t + \\tfrac{1}{2} a t^2$",
+     "$v = v_0 + at$",
+     "$v^2 = v_0^2 + 2a(x - x_0)$",
+     "$\\bar{v} = \\tfrac{v_0 + v}{2}$"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "這條式子不含位移",
+     "需要末速度，題目沒有給",
+     "需要末速度，而且不能直接得到位移"
+    ],
+    "ex": "選只含一個未知量 $\\Delta x$ 的式子：$\\Delta x = 0 + \\tfrac{1}{2} \\times 2 \\times 5^2 = 25$ m。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ps-3",
+   "skill": "physics/kinematics-problem-solving",
+   "level": 3,
+   "context": "subject",
+   "scene": "檢查答案的合理性",
+   "question": {
+    "type": "mc",
+    "q": "同學算出一位短跑選手跑百米的平均速度是 85 m/s。最可能的問題是？",
+    "opts": [
+     "答案不合理：頂尖選手約 10 m/s，應檢查單位或代入的數值",
+     "答案合理，頂尖選手可以達到",
+     "應該把答案加上負號",
+     "平均速度沒有合理範圍可言"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "85 m/s 約每小時 300 公里，人類跑不到",
+     "正負號只代表方向，不能修正大小的錯誤",
+     "檢查合理性是解題的最後一步"
+    ],
+    "ex": "解完一定要比對常識的數量級。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ps-4",
+   "skill": "physics/kinematics-problem-solving",
+   "level": 3,
+   "context": "commission",
+   "scene": "科展評審",
+   "question": {
+    "type": "mc",
+    "q": "學生報告：「取向上為正，球從手中以 8 m/s 上拋，我代入 $a = +9.8\\ \\text{m/s}^2$。」這會造成什麼結果？",
+    "opts": [
+     "算出的球會越飛越快，永遠不會停下來",
+     "沒有影響，$g$ 的正負號可以隨便取",
+     "只有時間會算錯，高度不受影響",
+     "球會停得比實際更快"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "選定座標後，向下的重力加速度必須為負",
+     "速度與高度都會算錯",
+     "符號錯讓速度增加，而不是減少"
+    ],
+    "ex": "向上為正時 $a = -9.8\\ \\text{m/s}^2$。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-1",
+   "skill": "physics/free-fall",
+   "level": 2,
+   "context": "subject",
+   "scene": "落下的速率",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "石頭從靜止自由落下 {{t}} s（忽略空氣阻力，$g = {{g}}$ m/s²）。這時的速率是多少？",
+    "vars": {
+     "t": 3,
+     "g": 9.8
+    },
+    "answer": "g * t",
+    "unit": "m/s",
+    "sig": 3,
+    "mistakes": [
+     {
+      "expr": "g * t^2 / 2",
+      "why": "算成了落下的距離"
+     },
+     {
+      "expr": "g / t",
+      "why": "公式記錯"
+     }
+    ],
+    "ex": "$v = gt = 9.8 \\times 3 = 29.4$ m/s。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-2",
+   "skill": "physics/free-fall",
+   "level": 2,
+   "context": "commission",
+   "scene": "攀岩館安全員",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "安全員從岩點邊緣放開一小袋止滑粉，{{t}} s 後落地。岩點離地多高？（$g = {{g}}$ m/s²，忽略空氣阻力）",
+    "vars": {
+     "t": 1.6,
+     "g": 9.8
+    },
+    "answer": "g * t^2 / 2",
+    "unit": "m",
+    "sig": 3,
+    "mistakes": [
+     {
+      "expr": "g * t",
+      "why": "算成了落地時的速率"
+     },
+     {
+      "expr": "g * t^2",
+      "why": "忘了除以 2"
+     }
+    ],
+    "ex": "$h = \\tfrac{1}{2} g t^2 = 0.5 \\times 9.8 \\times 1.6^2 \\approx 12.5$ m。",
+    "as": "mc"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-3",
+   "skill": "physics/free-fall",
+   "level": 3,
+   "context": "subject",
+   "scene": "最高點的迷思",
+   "encounter": true,
+   "question": {
+    "type": "mc",
+    "q": "球被向上拋到最高點的那一瞬間，下列何者正確？",
+    "opts": [
+     "速度為零，加速度仍為 $g$ 向下",
+     "速度與加速度都為零",
+     "速度為零，加速度向上",
+     "速度向下，加速度為零"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "重力一直在作用，加速度不為零",
+     "重力始終向下",
+     "最高點的速度為零，加速度也不為零"
+    ],
+    "ex": "最高點只是速度由正轉負的瞬間；加速度從頭到尾都是 $g$ 向下。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-4",
+   "skill": "physics/free-fall",
+   "level": 3,
+   "context": "commission",
+   "scene": "陽台拋鑰匙",
+   "question": {
+    "type": "numeric",
+    "q": "取向上為正。從陽台把鑰匙以 {{v0}} m/s 向上拋給樓下的朋友，鑰匙離手時離地 {{h}} m。同學只算了上升到最高點的時間就當作落地時間。鑰匙從拋出到落地實際要多久？（$g = {{g}}$ m/s²）",
+    "vars": {
+     "v0": 4,
+     "h": 10,
+     "g": 9.8
+    },
+    "answer": "(v0 + sqrt(v0^2 + 2 * g * h)) / g",
+    "unit": "s",
+    "sig": 3,
+    "mistakes": [
+     {
+      "expr": "v0 / g",
+      "why": "只算到最高點（同學的錯誤）"
+     },
+     {
+      "expr": "sqrt(2 * h / g)",
+      "why": "忽略了向上的初速度"
+     }
+    ],
+    "ex": "解 $-h = v_0 t - \\tfrac{1}{2} g t^2$ 取正根：$t = \\dfrac{v_0 + \\sqrt{v_0^2 + 2gh}}{g} \\approx 1.89$ s。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-5",
+   "skill": "physics/free-fall",
+   "level": 4,
+   "context": "subject",
+   "scene": "換個星球",
+   "question": {
+    "type": "mc",
+    "q": "在月球上（重力加速度約為地球的 $1/6$）以相同初速向上拋球，最大高度會變成地球上的幾倍？",
+    "opts": [
+     "6 倍",
+     "$1/6$ 倍",
+     "$\\sqrt{6}$ 倍",
+     "一樣高"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "$h = v_0^2 / 2g$，$g$ 變小高度變大",
+     "高度與 $g$ 成反比，不是與平方根成反比",
+     "最大高度與 $g$ 有關"
+    ],
+    "ex": "$h_{\\max} = \\dfrac{v_0^2}{2g}$，$g$ 變為 $1/6$，高度變為 6 倍。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "ff-6",
+   "skill": "physics/free-fall",
+   "level": 4,
+   "context": "commission",
+   "scene": "跳傘教練",
+   "question": {
+    "type": "mc",
+    "q": "學員問：「跳出飛機後的前 2 秒，可以用自由落體公式算速度嗎？那第 20 秒呢？」哪個回答最恰當？",
+    "opts": [
+     "前 2 秒速度還不大，空氣阻力影響小，可以近似；第 20 秒已接近終端速度，不能用",
+     "兩個時間都可以，因為重力加速度不變",
+     "兩個時間都不能，因為人有質量",
+     "只要把 $g$ 換成 $2g$ 就都可以用"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "空氣阻力隨速度增加，後期加速度趨近於零",
+     "自由落體與質量無關；問題在空氣阻力",
+     "沒有根據的修正"
+    ],
+    "ex": "自由落體是忽略空氣阻力的模型；速度越大，阻力越不能忽略。"
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "gr-1",
+   "skill": "physics/motion-graphs",
+   "level": 2,
+   "context": "subject",
+   "scene": "讀位置–時間圖",
+   "encounter": true,
+   "question": {
+    "type": "numeric",
+    "q": "圖為物體的位置–時間圖。物體的速度是多少？",
+    "vars": {
+     "x0": 2,
+     "v": 1.5
+    },
+    "answer": "v",
+    "unit": "m/s",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "x0 + v * 8",
+      "why": "讀成某個時刻的位置"
+     },
+     {
+      "expr": "(x0 + v * 8) / 8",
+      "why": "用位置除以時間，沒有扣掉初位置"
+     }
+    ],
+    "ex": "直線的斜率 $= (14 - 2)/8 = 1.5$ m/s。",
+    "fig": {
+     "type": "plot",
+     "x": {
+      "var": "t",
+      "min": 0,
+      "max": 8,
+      "label": "$t$",
+      "unit": "s"
+     },
+     "y": {
+      "label": "$x$",
+      "unit": "m"
+     },
+     "series": [
+      {
+       "expr": "x0 + v * t",
+       "label": "$x(t)$"
+      }
+     ]
+    }
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "gr-2",
+   "skill": "physics/motion-graphs",
+   "level": 2,
+   "context": "commission",
+   "scene": "自行車碼表分析",
+   "question": {
+    "type": "numeric",
+    "q": "碼表匯出的速度–時間圖如下。前 {{T}} s 內騎了多遠？",
+    "vars": {
+     "v0": 2,
+     "a": 0.5,
+     "T": 8
+    },
+    "answer": "v0 * T + a * T^2 / 2",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "(v0 + a * T) * T",
+      "why": "用末速度乘時間，多算了三角形以上的部分"
+     },
+     {
+      "expr": "v0 * T",
+      "why": "只算了初速度那一塊"
+     }
+    ],
+    "ex": "圖線下的面積：梯形 $= \\tfrac{(2 + 6)}{2} \\times 8 = 32$ m。",
+    "as": "mc",
+    "fig": {
+     "type": "plot",
+     "x": {
+      "var": "t",
+      "min": 0,
+      "max": 8,
+      "label": "$t$",
+      "unit": "s"
+     },
+     "y": {
+      "label": "$v$",
+      "unit": "m/s",
+      "min": 0
+     },
+     "series": [
+      {
+       "expr": "v0 + a * t",
+       "label": "$v(t)$"
+      }
+     ]
+    }
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "gr-3",
+   "skill": "physics/motion-graphs",
+   "level": 3,
+   "context": "subject",
+   "scene": "讀速度–時間圖",
+   "question": {
+    "type": "mc",
+    "q": "圖為某物體的速度–時間圖。同學說：「圖線在 $t = 4$ s 後往下，所以物體開始往回走。」正確的說法是？",
+    "opts": [
+     "4 s 後物體減速，但速度仍為正，仍然往前走",
+     "同學說得對，物體在 4 s 後往回走",
+     "4 s 後物體靜止",
+     "4 s 後加速度變為零"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "往回走要速度變成負值，也就是圖線降到 0 以下",
+     "速度不為零，物體沒有靜止",
+     "斜率不為零，加速度不為零"
+    ],
+    "ex": "$v$–$t$ 圖往下代表速度變小；只要還在橫軸上方，物體就仍朝正方向前進。",
+    "fig": {
+     "type": "plot",
+     "x": {
+      "var": "t",
+      "min": 0,
+      "max": 8,
+      "label": "$t$",
+      "unit": "s"
+     },
+     "y": {
+      "label": "$v$",
+      "unit": "m/s",
+      "min": 0,
+      "max": 10
+     },
+     "series": [
+      {
+       "points": [
+        [
+         0,
+         0
+        ],
+        [
+         4,
+         8
+        ],
+        [
+         8,
+         4
+        ]
+       ],
+       "style": "line",
+       "label": "$v(t)$"
+      }
+     ]
+    }
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "gr-4",
+   "skill": "physics/motion-graphs",
+   "level": 3,
+   "context": "commission",
+   "scene": "電梯維修報告",
+   "question": {
+    "type": "numeric",
+    "q": "維修員把電梯的速度紀錄畫成圖：加速 {{t1}} s 到 {{vm}} m/s、等速 {{t2}} s、再減速 {{t3}} s 停下。報告寫的上升高度是「最高速度乘總時間」。實際上升了多高？",
+    "vars": {
+     "t1": 2,
+     "vm": 3,
+     "t2": 6,
+     "t3": 2
+    },
+    "answer": "vm * (t1 / 2 + t2 + t3 / 2)",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "vm * (t1 + t2 + t3)",
+      "why": "報告的做法：把加速與減速段也當成等速"
+     },
+     {
+      "expr": "vm * t2",
+      "why": "只算了等速段"
+     }
+    ],
+    "ex": "面積 $= \\tfrac{1}{2}(2)(3) + 6 \\times 3 + \\tfrac{1}{2}(2)(3) = 24$ m。",
+    "fig": {
+     "type": "plot",
+     "x": {
+      "var": "t",
+      "min": 0,
+      "max": 10,
+      "label": "$t$",
+      "unit": "s"
+     },
+     "y": {
+      "label": "$v$",
+      "unit": "m/s",
+      "min": 0,
+      "max": 4
+     },
+     "series": [
+      {
+       "points": [
+        [
+         0,
+         0
+        ],
+        [
+         "t1",
+         "vm"
+        ],
+        [
+         "t1 + t2",
+         "vm"
+        ],
+        [
+         "t1 + t2 + t3",
+         0
+        ]
+       ],
+       "style": "line",
+       "label": "$v(t)$"
+      }
+     ]
+    }
+   },
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  }
+ ],
+ "glossary": [
+  {
+   "term": "自由落體",
+   "en": "free fall",
+   "def": "只受重力作用、忽略空氣阻力的運動。",
+   "skill": "physics/free-fall",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "重力加速度",
+   "en": "acceleration due to gravity",
+   "def": "地表附近自由落下物體的加速度，約 $9.80\\ \\text{m/s}^2$，方向向下。",
+   "skill": "physics/free-fall",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.7",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "term": "斜率",
+   "en": "slope",
+   "def": "圖線的縱軸變化量除以橫軸變化量。",
+   "skill": "physics/motion-graphs",
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "§2.8",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  }
+ ],
+ "placement": [
+  {
+   "id": "pl-1",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/displacement"
+   ],
+   "question": {
+    "type": "mc",
+    "q": "一隻貓在直線走廊上從 $x = 1$ m 走到 $x = 7$ m，再走回 $x = 4$ m。牠的位移是？",
+    "opts": [
+     "$+3$ m",
+     "$+9$ m",
+     "$+4$ m",
+     "$-3$ m"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "那是路程",
+     "把終點位置當成位移",
+     "正負號顛倒"
+    ],
+    "ex": "$\\Delta x = 4 - 1 = 3$ m。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  },
+  {
+   "id": "pl-2",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/average-velocity"
+   ],
+   "question": {
+    "type": "numeric",
+    "q": "{{d}} m 的直線路程花 {{t}} s 走完。平均速率是多少？",
+    "vars": {
+     "d": 150,
+     "t": 60
+    },
+    "answer": "d / t",
+    "unit": "m/s",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "t / d",
+      "why": "分子分母顛倒"
+     }
+    ],
+    "ex": "$150 / 60 = 2.5$ m/s。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  },
+  {
+   "id": "pl-3",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/acceleration"
+   ],
+   "question": {
+    "type": "mc",
+    "q": "加速度的 SI 單位是？",
+    "opts": [
+     "$\\text{m/s}^2$",
+     "m/s",
+     "$\\text{m}^2/\\text{s}$",
+     "s/m"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "那是速度的單位",
+     "沒有這種用法",
+     "那是速度單位的倒數"
+    ],
+    "ex": "加速度是速度（m/s）每秒的變化。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  },
+  {
+   "id": "pl-4",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/constant-acceleration-equations"
+   ],
+   "question": {
+    "type": "numeric",
+    "q": "從靜止出發，以 {{a}} m/s² 等加速度運動 {{t}} s，走了多遠？",
+    "vars": {
+     "a": 4,
+     "t": 3
+    },
+    "answer": "a * t^2 / 2",
+    "unit": "m",
+    "sig": 2,
+    "mistakes": [
+     {
+      "expr": "a * t^2",
+      "why": "忘了除以 2"
+     },
+     {
+      "expr": "a * t",
+      "why": "算成了末速度"
+     }
+    ],
+    "ex": "$\\tfrac{1}{2} \\times 4 \\times 3^2 = 18$ m。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  },
+  {
+   "id": "pl-5",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/free-fall"
+   ],
+   "question": {
+    "type": "mc",
+    "q": "在真空中，從同一高度同時放開一顆鐵球與一根羽毛，結果是？",
+    "opts": [
+     "同時落地",
+     "鐵球先落地",
+     "羽毛先落地",
+     "兩者都不會落下"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "沒有空氣阻力時，落下加速度與質量無關",
+     "沒有空氣阻力時，落下加速度與質量無關",
+     "真空中仍有重力"
+    ],
+    "ex": "真空中沒有空氣阻力，兩者加速度都是 $g$。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  },
+  {
+   "id": "pl-6",
+   "school": "physics/newtonian-mechanics",
+   "tier": 1,
+   "skills": [
+    "physics/motion-graphs"
+   ],
+   "question": {
+    "type": "mc",
+    "q": "速度–時間圖中，圖線下的面積代表？",
+    "opts": [
+     "位移",
+     "加速度",
+     "速度",
+     "時間"
+    ],
+    "a": 0,
+    "why": [
+     null,
+     "加速度是圖線的斜率",
+     "速度是縱軸的值",
+     "時間是橫軸"
+    ],
+    "ex": "面積 = 速度 × 時間 = 位移。"
+   },
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  }
+ ],
+ "bosses": [
+  {
+   "id": "boss-ch2",
+   "kind": "gym",
+   "name": "十字路口的黃燈",
+   "npc": "交通工程師阿哲",
+   "intro": "路口要重新設定黃燈時間。工程師請你一步步算出：駕駛看到黃燈後，車子需要多少距離才停得下來。",
+   "skills": [
+    "physics/constant-acceleration-equations",
+    "physics/kinematics-problem-solving",
+    "physics/acceleration"
+   ],
+   "steps": [
+    {
+     "type": "numeric",
+     "q": "車速為 {{v}} m/s。駕駛看到黃燈到踩下煞車的反應時間是 {{tr}} s，這段時間車子等速前進多遠？",
+     "vars": {
+      "v": 15,
+      "tr": 0.8
+     },
+     "answer": "v * tr",
+     "unit": "m",
+     "sig": 2,
+     "mistakes": [
+      {
+       "expr": "v / tr",
+       "why": "速度除以時間不是距離"
+      }
+     ],
+     "ex": "反應時間內車速不變：$15 \\times 0.8 = 12$ m。"
+    },
+    {
+     "type": "numeric",
+     "q": "接著以大小 {{a}} m/s² 的減速度煞車。從 {{v}} m/s 煞停需要多少距離？",
+     "vars": {
+      "v": 15,
+      "a": 5
+     },
+     "answer": "v^2 / (2 * a)",
+     "unit": "m",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "v^2 / a",
+       "why": "忘了除以 2"
+      }
+     ],
+     "ex": "$\\Delta x = v^2/(2a) = 225/10 = 22.5$ m。"
+    },
+    {
+     "type": "numeric",
+     "q": "從看到黃燈到停下，總共需要多少距離？",
+     "vars": {
+      "v": 15,
+      "tr": 0.8,
+      "a": 5
+     },
+     "answer": "v * tr + v^2 / (2 * a)",
+     "unit": "m",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "v^2 / (2 * a)",
+       "why": "忘了反應距離"
+      }
+     ],
+     "ex": "$12 + 22.5 = 34.5$ m。"
+    },
+    {
+     "type": "numeric",
+     "q": "煞車本身花了多少時間？",
+     "vars": {
+      "v": 15,
+      "a": 5
+     },
+     "answer": "v / a",
+     "unit": "s",
+     "sig": 2,
+     "mistakes": [
+      {
+       "expr": "2 * v / a",
+       "why": "多乘了 2"
+      }
+     ],
+     "ex": "$t = v/a = 3$ s；黃燈至少要涵蓋反應時間加煞車時間。"
+    }
+   ],
+   "origin": "document",
+   "license": "CC-BY-4.0",
+   "attribution": {
+    "name": "OpenStax College Physics 2e",
+    "loc": "Ch.2 §2.5–2.6",
+    "url": "https://openstax.org/details/books/college-physics-2e"
+   }
+  },
+  {
+   "id": "boss-tier1",
+   "kind": "tier",
+   "name": "運動學初階檢定",
+   "npc": "檢定官",
+   "intro": "檢定官把一顆球從地面往上踢。用你學過的全部工具，說明這顆球的運動。",
+   "skills": [
+    "physics/free-fall",
+    "physics/motion-graphs",
+    "physics/constant-acceleration-equations"
+   ],
+   "steps": [
+    {
+     "type": "numeric",
+     "q": "取向上為正，球以 {{v0}} m/s 向上離地。多久到達最高點？（$g = {{g}}$ m/s²）",
+     "vars": {
+      "v0": 14.7,
+      "g": 9.8
+     },
+     "answer": "v0 / g",
+     "unit": "s",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "2 * v0 / g",
+       "why": "算成了回到地面的時間"
+      }
+     ],
+     "ex": "最高點 $v = 0$：$t = v_0/g = 1.5$ s。"
+    },
+    {
+     "type": "numeric",
+     "q": "最高點離地多高？（$v_0 = {{v0}}$ m/s，$g = {{g}}$ m/s²）",
+     "vars": {
+      "v0": 14.7,
+      "g": 9.8
+     },
+     "answer": "v0^2 / (2 * g)",
+     "unit": "m",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "v0^2 / g",
+       "why": "忘了除以 2"
+      }
+     ],
+     "ex": "$h = v_0^2/(2g) \\approx 11.0$ m。"
+    },
+    {
+     "type": "mc",
+     "q": "球從踢起到落地，它的速度–時間圖是什麼形狀？",
+     "opts": [
+      "一條斜率為 $-g$ 的直線，從 $+14.7$ m/s 降到 $-14.7$ m/s",
+      "先降到零，然後停在零",
+      "一條開口向下的拋物線",
+      "一條水平線"
+     ],
+     "a": 0,
+     "why": [
+      null,
+      "最高點只是一瞬間，速度不會停在零",
+      "位置–時間圖才是拋物線",
+      "速度一直在變，不是水平線"
+     ],
+     "ex": "加速度固定為 $-g$，所以 $v$–$t$ 圖是斜率 $-g$ 的直線。"
+    },
+    {
+     "type": "numeric",
+     "q": "球落回地面時的速度是多少？（取向上為正，$v_0 = {{v0}}$ m/s）",
+     "vars": {
+      "v0": 14.7
+     },
+     "answer": "-v0",
+     "unit": "m/s",
+     "sig": 3,
+     "mistakes": [
+      {
+       "expr": "v0",
+       "why": "忽略了方向：落地時速度朝下"
+      }
+     ],
+     "ex": "忽略空氣阻力時，落回同一高度的速率與拋出時相同，方向相反。"
+    }
+   ],
+   "origin": "supplement",
+   "license": "CC0-1.0",
+   "attribution": {
+    "name": "AI 補充"
+   }
+  }
+ ]
+}
