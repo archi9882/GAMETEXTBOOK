@@ -1,0 +1,22 @@
+name: 題目或內容有誤
+description: 示範世界或框架範例中的知識錯誤、答案錯誤、干擾選項不合理
+labels: ["content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        這裡只處理本專案提供的內容（示範世界、框架中的範例）。你自己用 AI 生成的世界有錯，請在工作台的審閱頁標記，再把修正請求貼回給你的 AI。
+  - type: input
+    id: where
+    attributes:
+      label: 在哪裡
+      description: 世界名稱與項目編號（審閱頁上灰色的那串，例如 practices[eq-4]），或框架的章節
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 哪裡有誤、正確應該是什麼
+      description: 請附上理由或可查證的出處。
+    validations:
+      required: true

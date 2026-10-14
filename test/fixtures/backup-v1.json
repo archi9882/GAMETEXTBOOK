@@ -1,0 +1,1483 @@
+{
+ "kind": "expert-quest-backup",
+ "version": 1,
+ "exportedAt": "2026-10-14T00:00:00.000Z",
+ "notice": "含有文件內容，僅限個人使用。要發給他人請匯出班級版。",
+ "worlds": [
+  {
+   "id": "test-world",
+   "world": {
+    "id": "test-world",
+    "schools": [
+     {
+      "id": "physics/newtonian-mechanics",
+      "name": "牛頓力學",
+      "en": "Newtonian Mechanics",
+      "discipline": "physics",
+      "tiers": [
+       {
+        "tier": 1,
+        "name": "初階",
+        "label": "運動學",
+        "anchor": "高中",
+        "boss": "boss-t1"
+       }
+      ],
+      "finalBoss": "boss-final"
+     }
+    ],
+    "clusters": [
+     {
+      "id": "ch1",
+      "school": "physics/newtonian-mechanics",
+      "tier": 1,
+      "name": "運動",
+      "pages": [
+       1,
+       20
+      ],
+      "skills": [
+       "physics/velocity",
+       "physics/acceleration"
+      ],
+      "boss": "boss-ch1"
+     }
+    ],
+    "skills": [
+     {
+      "id": "physics/velocity",
+      "name": "速度",
+      "en": "Velocity",
+      "aliases": [
+       "velocity"
+      ],
+      "num": "1.1",
+      "schools": [
+       "physics/newtonian-mechanics"
+      ],
+      "tier": 1,
+      "cluster": "ch1",
+      "kind": "optional",
+      "ktype": [
+       "concept"
+      ],
+      "maxLevel": 1,
+      "pre": [],
+      "def": "位移對時間的變化率。",
+      "origin": "document",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "attribution": {
+       "loc": "§1.1, p.2"
+      },
+      "confidence": "document"
+     },
+     {
+      "id": "physics/acceleration",
+      "name": "加速度",
+      "en": "Acceleration",
+      "aliases": [
+       "acceleration",
+       "加速度"
+      ],
+      "num": "1.2",
+      "schools": [
+       "physics/newtonian-mechanics"
+      ],
+      "tier": 1,
+      "cluster": "ch1",
+      "kind": "core",
+      "ktype": [
+       "concept",
+       "principle"
+      ],
+      "maxLevel": 3,
+      "meta": [
+       "暫態與時間常數"
+      ],
+      "pre": [
+       "physics/velocity",
+       "math/derivative"
+      ],
+      "links": [
+       {
+        "skill": "math/derivative",
+        "unlocks": 3
+       }
+      ],
+      "pages": [
+       5,
+       8
+      ],
+      "examples": [
+       "1.1"
+      ],
+      "practiceRefs": [
+       "1.1"
+      ],
+      "def": "速度對時間的變化率，$a = \\dfrac{dv}{dt}$。",
+      "analog": {
+       "text": "像油門踩多深",
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      "analogLimit": "油門不等於加速度",
+      "story": "",
+      "figs": [
+       {
+        "type": "ref",
+        "desc": "賽車加速的照片",
+        "page": 6,
+        "figure": "Fig. 1.3"
+       }
+      ],
+      "terms": [
+       "速度"
+      ],
+      "origin": "document",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "attribution": {
+       "loc": "§1.2, p.5"
+      },
+      "confidence": "document",
+      "expandable": true
+     }
+    ],
+    "practices": [
+     {
+      "id": "p1",
+      "skill": "physics/acceleration",
+      "level": 2,
+      "context": "subject",
+      "scene": "v-t 圖",
+      "encounter": true,
+      "question": {
+       "type": "numeric",
+       "q": "圖為速度對時間圖，初速 {{v0}} m/s。求加速度。",
+       "vars": {
+        "v0": 2,
+        "a": 1.5
+       },
+       "fig": {
+        "type": "plot",
+        "x": {
+         "var": "t",
+         "min": 0,
+         "max": 6,
+         "label": "$t$",
+         "unit": "s"
+        },
+        "y": {
+         "label": "$v$",
+         "unit": "m/s"
+        },
+        "series": [
+         {
+          "expr": "v0 + a * t",
+          "label": "$v(t)$"
+         },
+         {
+          "points": [
+           [
+            0,
+            "v0"
+           ],
+           [
+            6,
+            "v0 + a * 6"
+           ]
+          ],
+          "style": "dots"
+         }
+        ]
+       },
+       "answer": "a",
+       "unit": "m/s^2",
+       "sig": 2,
+       "as": "mc",
+       "mistakes": [
+        {
+         "expr": "v0 + a * 6",
+         "why": "讀成末速度"
+        }
+       ],
+       "ex": "斜率"
+      },
+      "origin": "document",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "attribution": {
+       "loc": "Example 1.1"
+      }
+     },
+     {
+      "id": "p2",
+      "skill": "physics/acceleration",
+      "level": 1,
+      "context": "commission",
+      "scene": "細胞",
+      "encounter": true,
+      "question": {
+       "type": "mc",
+       "q": "哪個胞器合成 ATP？",
+       "opts": [
+        "粒線體",
+        "核糖體"
+       ],
+       "a": 0,
+       "why": [
+        null,
+        "合成蛋白質"
+       ],
+       "fig": {
+        "type": "molecule",
+        "smiles": "CCO",
+        "label": "乙醇"
+       }
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "p3",
+      "skill": "physics/acceleration",
+      "level": 2,
+      "context": "subject",
+      "scene": "排序",
+      "question": {
+       "type": "order",
+       "q": "排序",
+       "items": [
+        "a",
+        "b",
+        "c"
+       ],
+       "shown": [
+        2,
+        0,
+        1
+       ],
+       "fig": {
+        "type": "flow",
+        "dir": "LR",
+        "nodes": [
+         {
+          "id": "n1",
+          "text": "A"
+         },
+         {
+          "id": "n2",
+          "text": "B"
+         }
+        ],
+        "edges": [
+         {
+          "from": "n1",
+          "to": "n2"
+         }
+        ]
+       }
+      },
+      "origin": "expansion",
+      "license": "CC-BY-4.0",
+      "attribution": {
+       "name": "OpenStax",
+       "loc": "Ch.2",
+       "url": "https://openstax.org/"
+      }
+     },
+     {
+      "id": "p4",
+      "skill": "physics/acceleration",
+      "level": 3,
+      "context": "subject",
+      "scene": "拋射",
+      "question": {
+       "type": "sim",
+       "q": "以 {{v}} m/s 發射，調整發射角。",
+       "sliders": [
+        {
+         "var": "th",
+         "min": 5,
+         "max": 85,
+         "step": 1,
+         "unit": "°"
+        }
+       ],
+       "consts": {
+        "v": 20,
+        "g": 9.8
+       },
+       "output": {
+        "label": "射程",
+        "expr": "v^2 * sin(2 * th * pi / 180) / g",
+        "unit": "m"
+       },
+       "pass": "abs(th - 45) < 1.5",
+       "fig": {
+        "type": "diagram",
+        "grid": [
+         10,
+         6
+        ],
+        "points": [
+         {
+          "id": "A",
+          "at": [
+           1,
+           1
+          ]
+         },
+         {
+          "id": "B",
+          "at": [
+           6,
+           "1 + 0"
+          ]
+         }
+        ],
+        "segments": [
+         {
+          "from": "A",
+          "to": "B",
+          "style": "dashed"
+         }
+        ],
+        "arrows": [
+         {
+          "from": [
+           3,
+           1
+          ],
+          "to": [
+           3,
+           4
+          ],
+          "label": "$\\vec{F}$"
+         }
+        ],
+        "labels": [
+         {
+          "at": [
+           1,
+           0
+          ],
+          "text": "A"
+         }
+        ]
+       }
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "p5",
+      "skill": "physics/acceleration",
+      "level": 3,
+      "context": "subject",
+      "scene": "滑坡",
+      "question": {
+       "type": "method",
+       "q": "選方法",
+       "methods": [
+        {
+         "name": "能量守恆",
+         "best": true
+        },
+        {
+         "name": "積分",
+         "why": "繁瑣"
+        }
+       ],
+       "then": {
+        "type": "numeric",
+        "q": "高度 {{h}} m，求底部速度。",
+        "vars": {
+         "h": 2,
+         "g": 9.8
+        },
+        "answer": "sqrt(2 * g * h)",
+        "unit": "m/s",
+        "fig": {
+         "type": "circuit",
+         "grid": [
+          8,
+          6
+         ],
+         "elements": [
+          {
+           "id": "R1",
+           "kind": "resistor",
+           "from": [
+            0,
+            0
+           ],
+           "to": [
+            3,
+            0
+           ],
+           "label": "{{h}} Ω"
+          },
+          {
+           "id": "U1",
+           "kind": "opamp",
+           "pins": {
+            "plus": [
+             4,
+             1
+            ],
+            "minus": [
+             4,
+             3
+            ],
+            "out": [
+             6,
+             2
+            ]
+           }
+          }
+         ]
+        }
+       },
+       "fig": {
+        "type": "table",
+        "cols": [
+         "x",
+         "y"
+        ],
+        "rows": [
+         [
+          "a",
+          1
+         ],
+         [
+          "b",
+          {
+           "expr": "1 + 1"
+          }
+         ]
+        ]
+       }
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     }
+    ],
+    "placement": [
+     {
+      "id": "pl1",
+      "school": "physics/newtonian-mechanics",
+      "tier": 1,
+      "skills": [
+       "physics/acceleration"
+      ],
+      "question": {
+       "type": "mc",
+       "q": "加速度單位？",
+       "opts": [
+        "m/s^2",
+        "m/s"
+       ],
+       "a": 0
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "pl2",
+      "school": "physics/newtonian-mechanics",
+      "tier": 1,
+      "skills": [
+       "physics/velocity"
+      ],
+      "question": {
+       "type": "mc",
+       "q": "速度是向量嗎？",
+       "opts": [
+        "是",
+        "否"
+       ],
+       "a": 0
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "pl3",
+      "school": "physics/newtonian-mechanics",
+      "tier": 1,
+      "skills": [
+       "physics/velocity"
+      ],
+      "question": {
+       "type": "numeric",
+       "q": "{{d}} m 走 {{t}} s，平均速率？",
+       "vars": {
+        "d": 100,
+        "t": 20
+       },
+       "answer": "d / t",
+       "unit": "m/s",
+       "mistakes": [
+        {
+         "expr": "t / d",
+         "why": "倒過來除"
+        }
+       ]
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "pl4",
+      "school": "physics/newtonian-mechanics",
+      "tier": 1,
+      "skills": [
+       "physics/acceleration"
+      ],
+      "question": {
+       "type": "numeric",
+       "q": "{{s}} s 內由靜止加速到 {{v}} m/s，加速度？",
+       "vars": {
+        "s": 4,
+        "v": 10
+       },
+       "answer": "v / s",
+       "unit": "m/s^2"
+      },
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     }
+    ],
+    "bosses": [
+     {
+      "id": "boss-ch1",
+      "kind": "gym",
+      "name": "道館",
+      "npc": "館主",
+      "intro": "開場",
+      "skills": [
+       "physics/acceleration"
+      ],
+      "steps": [
+       {
+        "type": "mc",
+        "q": "?",
+        "opts": [
+         "a",
+         "b"
+        ],
+        "a": 1
+       }
+      ],
+      "origin": "document",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "attribution": {
+       "loc": "Ch.1 Summary"
+      }
+     },
+     {
+      "id": "boss-t1",
+      "kind": "tier",
+      "name": "晉階",
+      "skills": [
+       "physics/acceleration",
+       "physics/velocity"
+      ],
+      "steps": [
+       {
+        "type": "numeric",
+        "q": "求 {{x}} 的兩倍",
+        "vars": {
+         "x": 3
+        },
+        "answer": "2 * x"
+       }
+      ],
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     },
+     {
+      "id": "boss-final",
+      "kind": "final",
+      "name": "審核者的一天",
+      "skills": [
+       "physics/acceleration"
+      ],
+      "steps": [
+       {
+        "type": "order",
+        "q": "排序",
+        "items": [
+         "a",
+         "b"
+        ],
+        "shown": [
+         1,
+         0
+        ]
+       }
+      ],
+      "origin": "supplement",
+      "license": "CC0-1.0",
+      "attribution": {
+       "name": "AI 補充"
+      }
+     }
+    ],
+    "achievements": [
+     {
+      "id": "a1",
+      "rank": "bronze",
+      "name": "銅",
+      "when": {
+       "skill": "physics/acceleration",
+       "level": 2
+      }
+     },
+     {
+      "id": "a2",
+      "rank": "silver",
+      "name": "銀",
+      "when": {
+       "boss": "boss-t1"
+      }
+     }
+    ],
+    "glossary": [
+     {
+      "term": "速度",
+      "en": "velocity",
+      "def": "位移的變化率",
+      "skill": "physics/velocity",
+      "origin": "document",
+      "license": "LicenseRef-All-Rights-Reserved",
+      "attribution": {
+       "loc": "p.3"
+      }
+     }
+    ],
+    "report": {
+     "stats": {},
+     "mapping": [],
+     "gaps": [],
+     "expandable": [],
+     "possibleDuplicates": [],
+     "missingPrereqs": [
+      {
+       "skill": "math/derivative",
+       "neededBy": [
+        "physics/acceleration"
+       ]
+      }
+     ],
+     "newSchools": [],
+     "licenses": {
+      "CC0-1.0": 10
+     }
+    },
+    "framework": "expert-quest/1.0",
+    "title": "測試世界",
+    "lang": "zh-TW",
+    "source": {
+     "type": "textbook",
+     "title": "Test Book",
+     "authors": "A. Author",
+     "edition": "1",
+     "year": 2020,
+     "license": "LicenseRef-All-Rights-Reserved"
+    },
+    "license": {
+     "default": "CC0-1.0"
+    },
+    "player": {
+     "background": "高中",
+     "goal": "考試"
+    },
+    "theme": {
+     "metaphor": "city-streetlights"
+    },
+    "bridges": []
+   },
+   "complete": true,
+   "parts": [
+    {
+     "framework": "expert-quest/1.0",
+     "id": "test-world",
+     "title": "測試世界",
+     "lang": "zh-TW",
+     "source": {
+      "type": "textbook",
+      "title": "Test Book",
+      "authors": "A. Author",
+      "edition": "1",
+      "year": 2020,
+      "license": "LicenseRef-All-Rights-Reserved"
+     },
+     "license": {
+      "default": "CC0-1.0"
+     },
+     "player": {
+      "background": "高中",
+      "goal": "考試"
+     },
+     "theme": {
+      "metaphor": "city-streetlights"
+     },
+     "schools": [
+      {
+       "id": "physics/newtonian-mechanics",
+       "name": "牛頓力學",
+       "en": "Newtonian Mechanics",
+       "discipline": "physics",
+       "tiers": [
+        {
+         "tier": 1,
+         "name": "初階",
+         "label": "運動學",
+         "anchor": "高中",
+         "boss": "boss-t1"
+        }
+       ],
+       "finalBoss": "boss-final"
+      }
+     ],
+     "clusters": [
+      {
+       "id": "ch1",
+       "school": "physics/newtonian-mechanics",
+       "tier": 1,
+       "name": "運動",
+       "pages": [
+        1,
+        20
+       ],
+       "skills": [
+        "physics/velocity",
+        "physics/acceleration"
+       ],
+       "boss": "boss-ch1"
+      }
+     ],
+     "skills": [
+      {
+       "id": "physics/velocity",
+       "name": "速度",
+       "en": "Velocity",
+       "aliases": [
+        "velocity"
+       ],
+       "num": "1.1",
+       "schools": [
+        "physics/newtonian-mechanics"
+       ],
+       "tier": 1,
+       "cluster": "ch1",
+       "kind": "optional",
+       "ktype": [
+        "concept"
+       ],
+       "maxLevel": 1,
+       "pre": [],
+       "def": "位移對時間的變化率。",
+       "origin": "document",
+       "license": "LicenseRef-All-Rights-Reserved",
+       "attribution": {
+        "loc": "§1.1, p.2"
+       },
+       "confidence": "document"
+      },
+      {
+       "id": "physics/acceleration",
+       "name": "加速度",
+       "en": "Acceleration",
+       "aliases": [
+        "acceleration",
+        "加速度"
+       ],
+       "num": "1.2",
+       "schools": [
+        "physics/newtonian-mechanics"
+       ],
+       "tier": 1,
+       "cluster": "ch1",
+       "kind": "core",
+       "ktype": [
+        "concept",
+        "principle"
+       ],
+       "maxLevel": 3,
+       "meta": [
+        "暫態與時間常數"
+       ],
+       "pre": [
+        "physics/velocity",
+        "math/derivative"
+       ],
+       "links": [
+        {
+         "skill": "math/derivative",
+         "unlocks": 3
+        }
+       ],
+       "pages": [
+        5,
+        8
+       ],
+       "examples": [
+        "1.1"
+       ],
+       "practiceRefs": [
+        "1.1"
+       ],
+       "def": "速度對時間的變化率，$a = \\dfrac{dv}{dt}$。",
+       "analog": {
+        "text": "像油門踩多深",
+        "origin": "supplement",
+        "license": "CC0-1.0",
+        "attribution": {
+         "name": "AI 補充"
+        }
+       },
+       "analogLimit": "油門不等於加速度",
+       "story": "",
+       "figs": [
+        {
+         "type": "ref",
+         "desc": "賽車加速的照片",
+         "page": 6,
+         "figure": "Fig. 1.3"
+        }
+       ],
+       "terms": [
+        "速度"
+       ],
+       "origin": "document",
+       "license": "LicenseRef-All-Rights-Reserved",
+       "attribution": {
+        "loc": "§1.2, p.5"
+       },
+       "confidence": "document",
+       "expandable": true
+      }
+     ],
+     "practices": [
+      {
+       "id": "p1",
+       "skill": "physics/acceleration",
+       "level": 2,
+       "context": "subject",
+       "scene": "v-t 圖",
+       "encounter": true,
+       "question": {
+        "type": "numeric",
+        "q": "圖為速度對時間圖，初速 {{v0}} m/s。求加速度。",
+        "vars": {
+         "v0": 2,
+         "a": 1.5
+        },
+        "fig": {
+         "type": "plot",
+         "x": {
+          "var": "t",
+          "min": 0,
+          "max": 6,
+          "label": "$t$",
+          "unit": "s"
+         },
+         "y": {
+          "label": "$v$",
+          "unit": "m/s"
+         },
+         "series": [
+          {
+           "expr": "v0 + a * t",
+           "label": "$v(t)$"
+          },
+          {
+           "points": [
+            [
+             0,
+             "v0"
+            ],
+            [
+             6,
+             "v0 + a * 6"
+            ]
+           ],
+           "style": "dots"
+          }
+         ]
+        },
+        "answer": "a",
+        "unit": "m/s^2",
+        "sig": 2,
+        "as": "mc",
+        "mistakes": [
+         {
+          "expr": "v0 + a * 6",
+          "why": "讀成末速度"
+         }
+        ],
+        "ex": "斜率"
+       },
+       "origin": "document",
+       "license": "LicenseRef-All-Rights-Reserved",
+       "attribution": {
+        "loc": "Example 1.1"
+       }
+      },
+      {
+       "id": "p2",
+       "skill": "physics/acceleration",
+       "level": 1,
+       "context": "commission",
+       "scene": "細胞",
+       "encounter": true,
+       "question": {
+        "type": "mc",
+        "q": "哪個胞器合成 ATP？",
+        "opts": [
+         "粒線體",
+         "核糖體"
+        ],
+        "a": 0,
+        "why": [
+         null,
+         "合成蛋白質"
+        ],
+        "fig": {
+         "type": "molecule",
+         "smiles": "CCO",
+         "label": "乙醇"
+        }
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "p3",
+       "skill": "physics/acceleration",
+       "level": 2,
+       "context": "subject",
+       "scene": "排序",
+       "question": {
+        "type": "order",
+        "q": "排序",
+        "items": [
+         "a",
+         "b",
+         "c"
+        ],
+        "shown": [
+         2,
+         0,
+         1
+        ],
+        "fig": {
+         "type": "flow",
+         "dir": "LR",
+         "nodes": [
+          {
+           "id": "n1",
+           "text": "A"
+          },
+          {
+           "id": "n2",
+           "text": "B"
+          }
+         ],
+         "edges": [
+          {
+           "from": "n1",
+           "to": "n2"
+          }
+         ]
+        }
+       },
+       "origin": "expansion",
+       "license": "CC-BY-4.0",
+       "attribution": {
+        "name": "OpenStax",
+        "loc": "Ch.2",
+        "url": "https://openstax.org/"
+       }
+      },
+      {
+       "id": "p4",
+       "skill": "physics/acceleration",
+       "level": 3,
+       "context": "subject",
+       "scene": "拋射",
+       "question": {
+        "type": "sim",
+        "q": "以 {{v}} m/s 發射，調整發射角。",
+        "sliders": [
+         {
+          "var": "th",
+          "min": 5,
+          "max": 85,
+          "step": 1,
+          "unit": "°"
+         }
+        ],
+        "consts": {
+         "v": 20,
+         "g": 9.8
+        },
+        "output": {
+         "label": "射程",
+         "expr": "v^2 * sin(2 * th * pi / 180) / g",
+         "unit": "m"
+        },
+        "pass": "abs(th - 45) < 1.5",
+        "fig": {
+         "type": "diagram",
+         "grid": [
+          10,
+          6
+         ],
+         "points": [
+          {
+           "id": "A",
+           "at": [
+            1,
+            1
+           ]
+          },
+          {
+           "id": "B",
+           "at": [
+            6,
+            "1 + 0"
+           ]
+          }
+         ],
+         "segments": [
+          {
+           "from": "A",
+           "to": "B",
+           "style": "dashed"
+          }
+         ],
+         "arrows": [
+          {
+           "from": [
+            3,
+            1
+           ],
+           "to": [
+            3,
+            4
+           ],
+           "label": "$\\vec{F}$"
+          }
+         ],
+         "labels": [
+          {
+           "at": [
+            1,
+            0
+           ],
+           "text": "A"
+          }
+         ]
+        }
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "p5",
+       "skill": "physics/acceleration",
+       "level": 3,
+       "context": "subject",
+       "scene": "滑坡",
+       "question": {
+        "type": "method",
+        "q": "選方法",
+        "methods": [
+         {
+          "name": "能量守恆",
+          "best": true
+         },
+         {
+          "name": "積分",
+          "why": "繁瑣"
+         }
+        ],
+        "then": {
+         "type": "numeric",
+         "q": "高度 {{h}} m，求底部速度。",
+         "vars": {
+          "h": 2,
+          "g": 9.8
+         },
+         "answer": "sqrt(2 * g * h)",
+         "unit": "m/s",
+         "fig": {
+          "type": "circuit",
+          "grid": [
+           8,
+           6
+          ],
+          "elements": [
+           {
+            "id": "R1",
+            "kind": "resistor",
+            "from": [
+             0,
+             0
+            ],
+            "to": [
+             3,
+             0
+            ],
+            "label": "{{h}} Ω"
+           },
+           {
+            "id": "U1",
+            "kind": "opamp",
+            "pins": {
+             "plus": [
+              4,
+              1
+             ],
+             "minus": [
+              4,
+              3
+             ],
+             "out": [
+              6,
+              2
+             ]
+            }
+           }
+          ]
+         }
+        },
+        "fig": {
+         "type": "table",
+         "cols": [
+          "x",
+          "y"
+         ],
+         "rows": [
+          [
+           "a",
+           1
+          ],
+          [
+           "b",
+           {
+            "expr": "1 + 1"
+           }
+          ]
+         ]
+        }
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      }
+     ],
+     "placement": [
+      {
+       "id": "pl1",
+       "school": "physics/newtonian-mechanics",
+       "tier": 1,
+       "skills": [
+        "physics/acceleration"
+       ],
+       "question": {
+        "type": "mc",
+        "q": "加速度單位？",
+        "opts": [
+         "m/s^2",
+         "m/s"
+        ],
+        "a": 0
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "pl2",
+       "school": "physics/newtonian-mechanics",
+       "tier": 1,
+       "skills": [
+        "physics/velocity"
+       ],
+       "question": {
+        "type": "mc",
+        "q": "速度是向量嗎？",
+        "opts": [
+         "是",
+         "否"
+        ],
+        "a": 0
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "pl3",
+       "school": "physics/newtonian-mechanics",
+       "tier": 1,
+       "skills": [
+        "physics/velocity"
+       ],
+       "question": {
+        "type": "numeric",
+        "q": "{{d}} m 走 {{t}} s，平均速率？",
+        "vars": {
+         "d": 100,
+         "t": 20
+        },
+        "answer": "d / t",
+        "unit": "m/s",
+        "mistakes": [
+         {
+          "expr": "t / d",
+          "why": "倒過來除"
+         }
+        ]
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "pl4",
+       "school": "physics/newtonian-mechanics",
+       "tier": 1,
+       "skills": [
+        "physics/acceleration"
+       ],
+       "question": {
+        "type": "numeric",
+        "q": "{{s}} s 內由靜止加速到 {{v}} m/s，加速度？",
+        "vars": {
+         "s": 4,
+         "v": 10
+        },
+        "answer": "v / s",
+        "unit": "m/s^2"
+       },
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      }
+     ],
+     "bosses": [
+      {
+       "id": "boss-ch1",
+       "kind": "gym",
+       "name": "道館",
+       "npc": "館主",
+       "intro": "開場",
+       "skills": [
+        "physics/acceleration"
+       ],
+       "steps": [
+        {
+         "type": "mc",
+         "q": "?",
+         "opts": [
+          "a",
+          "b"
+         ],
+         "a": 1
+        }
+       ],
+       "origin": "document",
+       "license": "LicenseRef-All-Rights-Reserved",
+       "attribution": {
+        "loc": "Ch.1 Summary"
+       }
+      },
+      {
+       "id": "boss-t1",
+       "kind": "tier",
+       "name": "晉階",
+       "skills": [
+        "physics/acceleration",
+        "physics/velocity"
+       ],
+       "steps": [
+        {
+         "type": "numeric",
+         "q": "求 {{x}} 的兩倍",
+         "vars": {
+          "x": 3
+         },
+         "answer": "2 * x"
+        }
+       ],
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      },
+      {
+       "id": "boss-final",
+       "kind": "final",
+       "name": "審核者的一天",
+       "skills": [
+        "physics/acceleration"
+       ],
+       "steps": [
+        {
+         "type": "order",
+         "q": "排序",
+         "items": [
+          "a",
+          "b"
+         ],
+         "shown": [
+          1,
+          0
+         ]
+        }
+       ],
+       "origin": "supplement",
+       "license": "CC0-1.0",
+       "attribution": {
+        "name": "AI 補充"
+       }
+      }
+     ],
+     "achievements": [
+      {
+       "id": "a1",
+       "rank": "bronze",
+       "name": "銅",
+       "when": {
+        "skill": "physics/acceleration",
+        "level": 2
+       }
+      },
+      {
+       "id": "a2",
+       "rank": "silver",
+       "name": "銀",
+       "when": {
+        "boss": "boss-t1"
+       }
+      }
+     ],
+     "glossary": [
+      {
+       "term": "速度",
+       "en": "velocity",
+       "def": "位移的變化率",
+       "skill": "physics/velocity",
+       "origin": "document",
+       "license": "LicenseRef-All-Rights-Reserved",
+       "attribution": {
+        "loc": "p.3"
+       }
+      }
+     ],
+     "bridges": [],
+     "report": {
+      "stats": {},
+      "mapping": [],
+      "gaps": [],
+      "expandable": [],
+      "possibleDuplicates": [],
+      "missingPrereqs": [
+       {
+        "skill": "math/derivative",
+        "neededBy": [
+         "physics/acceleration"
+        ]
+       }
+      ],
+      "newSchools": [],
+      "licenses": {
+       "CC0-1.0": 10
+      }
+     }
+    }
+   ],
+   "imports": [
+    {
+     "part": "world",
+     "at": "2026-10-14T00:00:00.000Z"
+    }
+   ],
+   "importedAt": "2026-10-14T00:00:00.000Z",
+   "issues": {
+    "errors": [],
+    "warnings": []
+   },
+   "review": {
+    "flags": {
+     "practices[p2]": {
+      "note": "示範標記",
+      "at": "2026-10-14T00:00:00.000Z"
+     }
+    },
+    "seen": {
+     "practices[p1]": true
+    }
+   }
+  }
+ ],
+ "progress": {
+  "version": 1,
+  "skills": {
+   "physics/acceleration": {
+    "solved": {
+     "p1": 1
+    },
+    "xp": 20
+   }
+  }
+ }
+}
